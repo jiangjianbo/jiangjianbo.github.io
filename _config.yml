@@ -1,1 +1,109 @@
-theme: jekyll-theme-architect
+# Site settings
+title: 老翅寒暑
+SEOTitle: 老翅寒暑 | BigTall Blog
+header-img: img/home-bg-desk.jpg
+#email: jiangjianbo@gmail.com
+description: "一个老鸟的自白"
+keyword: "BigTall, BigTall Blog, 老翅寒暑, archetype, software design, OOA, OOD"
+url: "http://jiangjianbo.github.io"          # your host, for absolute URL
+baseurl: ""      # for example, '/blog' if your blog hosted on 'host/blog'
+github_repo: "https://github.com/jiangjianbo/jiangjianbo.github.io.git" # you code repository
+
+# Sidebar settings
+sidebar: true                           # whether or not using Sidebar.
+sidebar-about-description: "To B, or not to B, that is the question."
+sidebar-avatar: /img/about-bigtall-gentle.jpg      # use absolute URL, seeing it's used in both `/` and `/about/`
+
+
+
+# SNS settings
+RSS: false
+# weibo_username:     
+#zhihu_username:     
+github_username:    jiangjianbo
+#facebook_username:  
+#jianshu_username:   
+#twitter_username:   
+
+
+
+
+# Build settings
+# from 2016, 'pygments' is unsupported on GitHub Pages. Use 'rouge' for highlighting instead.
+permalink: pretty
+paginate: 10
+exclude: ["less","node_modules","Gruntfile.js","package.json","README.md"]
+anchorjs: true                          # if you want to customize anchor. check out line:181 of `post.html`
+
+
+
+# Gems
+# from PR#40, to support local preview for Jekyll 3.0
+plugins: [jekyll-paginate]
+
+
+
+
+# Markdown settings
+# replace redcarpet to kramdown,
+# although redcarpet can auto highlight code, the lack of header-id make the catalog impossible, so I switch to kramdown
+# document: http://jekyllrb.com/docs/configuration/#kramdown
+markdown: kramdown
+highlighter: rouge
+kramdown:
+  input: GFM                            # use Github Flavored Markdown !important
+
+
+
+# 评论系统
+# Disqus（https://disqus.com/）
+# disqus_username: xxx
+
+# Gitalk
+gitalk:
+  enable: true    #是否开启Gitalk评论
+  clientID: d7cd8d69d6e30316f49a       #生成的clientID
+  clientSecret: b06644150e9889cc8ec266646f9f0594f8a8192c    #生成的clientSecret
+  repo: jiangjianbo.github.io    #仓库名称
+  owner: jiangjianbo    #github用户名
+  admin: jiangjianbo
+  distractionFreeMode: true #是否启用类似FB的阴影遮罩
+
+
+# 统计
+
+# Analytics settings
+# Baidu Analytics
+ba_track_id: 74342d6ddffd6472427b688c4e05dd3f
+
+# Google Analytics
+ga_track_id: 'UA-137375520-1'            # Format: UA-xxxxxx-xx
+ga_domain: auto               # 默认的是 auto, 这里我是自定义了的域名，你如果没有自己的域名，需要改成auto
+
+
+
+
+
+# Featured Tags
+featured-tags: true                     # 是否使用首页标签
+featured-condition-size: 1              # 相同标签数量大于这个数，才会出现在首页
+
+
+
+# Progressive Web Apps
+chrome-tab-theme-color: "#000000"
+service-worker: true
+
+
+
+# Friends
+friends: [
+    {
+        title: "博客园·老翅寒暑",
+        href: "http://bigtall.cnblogs.com"
+    },{
+        title: "微信个人号·老翅寒暑",
+        image: true,
+        href: "/img/qrcode-bigtall.png"
+    }
+]
