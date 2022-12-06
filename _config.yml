@@ -27,36 +27,59 @@ github_username:    jiangjianbo
 
 
 
-
 # Build settings
 # from 2016, 'pygments' is unsupported on GitHub Pages. Use 'rouge' for highlighting instead.
+highlighter: rouge
 permalink: pretty
 paginate: 10
-exclude: ["less","node_modules","Gruntfile.js","package.json","README.md"]
-anchorjs: true                          # if you want to customize anchor. check out line:181 of `post.html`
-
-
+exclude:
+  [
+    "less",
+    "node_modules",
+    "Gruntfile.js",
+    "package.json",
+    "README.md",
+    "README.zh.md",
+  ]
+anchorjs: true # if you want to customize anchor. check out line:181 of `post.html`
+# If you have timezone issue (e.g. #68) in China, uncomment to use this:
+#timezone: CN
 
 # Gems
 # from PR#40, to support local preview for Jekyll 3.0
-plugins: [jekyll-paginate]
-
-
-
-
+# make sure you have this gem installed
+# `$ gem install jekyll-paginate`
+# plugins: [jekyll-paginate]
+plugins:
+  - "jekyll-paginate"
+  - "kramdown-plantuml"
+  
 # Markdown settings
 # replace redcarpet to kramdown,
 # although redcarpet can auto highlight code, the lack of header-id make the catalog impossible, so I switch to kramdown
 # document: http://jekyllrb.com/docs/configuration/#kramdown
 markdown: kramdown
-highlighter: rouge
 kramdown:
-  input: GFM                            # use Github Flavored Markdown !important
+  input: GFM # use Github Flavored Markdown !important
+  syntax_highlighter_opts:
+    span:
+      line_numbers: false
+    block:
+      line_numbers: true
+      start_line: 1
 
+plantuml:
+  plantuml_jar: /Users/jiangjianbo/win-share/program/plantuml/plantuml-nodot.1.2022.13.jar     # path to plantuml jar
+  tmp_folder: _plantuml               # tmp folder to put generated image files
+  dot_exe: /usr/local/bin/dot         # [optional] path to Graphviz dot execution
+  background_color: white             # [optional] UML image background color
 
+  type: utxt                         # type (passed as -t option, ex: -tutxt)
+  extension: txt                     # output extension override
+  plantuml_args: -nometadata         # extra args to be passed to plantuml
+  java_args: -Xmx1G                  # extra args to be passed to java
 
-# 评论系统
-# Disqus（https://disqus.com/）
+# Disqus settings
 # disqus_username: xxx
 
 # Gitalk
@@ -94,7 +117,8 @@ featured-condition-size: 1              # 相同标签数量大于这个数，�
 chrome-tab-theme-color: "#000000"
 service-worker: true
 
-
+# MathJax rendering for layout:page (e.g. post preview)
+page-mathjax: false
 
 # Friends
 friends: [

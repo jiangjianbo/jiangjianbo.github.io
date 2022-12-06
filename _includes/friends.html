@@ -1,0 +1,16 @@
+{% if site.friends %}
+<hr>
+<h5>FRIENDS</h5>
+<ul class="list-inline">
+  {% for friend in site.friends %}
+    {% if friend.image %}
+    <li>
+      <span>{{friend.title}}</span>
+      <img src="{{friend.href}}" alt="{{friend.title}}" />
+    </li>
+    {% else %}
+  <li><a href="{{friend.href}}">{{friend.title}}</a></li>
+    {% endif %}
+  {% endfor %}
+</ul>
+{% endif %}

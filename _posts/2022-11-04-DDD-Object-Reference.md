@@ -46,6 +46,8 @@ Spring Data中提供了诸如 Aggregate Roots 和相关 Domain Events 事件机�
 
 本文实现方案是仿照C语言的指针概念，实现了完全面向对象化的聚合对象引用。总体架构图如下：
 
+
+```plantuml
 @startuml
 
 class "对象引用" as ref<T> {
@@ -70,6 +72,7 @@ id_ref --|> cached_ref
 jpa_ref --|> id_ref
 
 @enduml
+```
 
 其中，对象引用是基础接口，所有需要用到对象的时候，就调用 `.get()` 接口获取。最终在数据层实现自带jpa存取接口，通过id查询获得对象。
 

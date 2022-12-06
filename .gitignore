@@ -1,8 +1,24 @@
+# debug file
+_site
+
+# jekyll file
+_posts/_draft
+_posts/_archive
+_archive
+
+node_modules
+.vscode
+.jekyll-cache
+*.log
+*.lock
+node_modules
 
 # Created by https://www.gitignore.io/api/macos
 
 ### macOS ###
 *.DS_Store
+*/.DS_Store
+*/*/.DS_Store
 .AppleDouble
 .LSOverride
 
@@ -31,5 +47,3 @@ Temporary Items
 
 # End of https://www.gitignore.io/api/macos
 
-# debug file
-_site
