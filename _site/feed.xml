@@ -1,0 +1,475 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>老翅寒暑</title>
+    <description>一个老鸟的自白</description>
+    <link>http://localhost:4000/</link>
+    <atom:link href="http://localhost:4000/feed.xml" rel="self" type="application/rss+xml" />
+    <pubDate>Tue, 06 Dec 2022 22:56:29 +0800</pubDate>
+    <lastBuildDate>Tue, 06 Dec 2022 22:56:29 +0800</lastBuildDate>
+    <generator>Jekyll v4.3.1</generator>
+    
+      <item>
+        <title>DDD聚合对象的引用的一种实现方式</title>
+        <description>&lt;h2 id=&quot;前言&quot;&gt;前言&lt;/h2&gt;
+
+&lt;p&gt;在DDD的实践中，聚合是第一个要面对的概念。通俗点的概念讲，聚合就是类似主从表结构，我们把主表称为“聚合根”。DDD建议我们在聚合内部实体之间的引用直接使用关联，聚合之间的相互引用就要通过“对象引用”进行。&lt;/p&gt;
+
+&lt;p&gt;我们通常的应用都会用到数据库，按照DDD的要求，那就是直接用ID进行引用。类似如下，对“学校”实体的引用变成了 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Long schoolId&lt;/code&gt;。如果是在面向对象的结构中，正确的引用方式应该是 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;School school&lt;/code&gt;。&lt;/p&gt;
+
+&lt;div class=&quot;language-java highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;table class=&quot;rouge-table&quot;&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class=&quot;rouge-gutter gl&quot;&gt;&lt;pre class=&quot;lineno&quot;&gt;1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;rouge-code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;nd&quot;&gt;@Data&lt;/span&gt;
+&lt;span class=&quot;kd&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;PersonDDD&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;nc&quot;&gt;Long&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;id&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;
+    &lt;span class=&quot;nc&quot;&gt;String&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;
+    &lt;span class=&quot;nc&quot;&gt;Long&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;schoolId&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+
+&lt;span class=&quot;nd&quot;&gt;@Data&lt;/span&gt;
+&lt;span class=&quot;kd&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;PersonOO&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;nc&quot;&gt;Long&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;id&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;
+    &lt;span class=&quot;nc&quot;&gt;String&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;
+    &lt;span class=&quot;nc&quot;&gt;School&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;school&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+
+&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;一个复杂的系统中，可以存在大量的聚合，每个聚合之间存在复杂的关联关系，如果直接使用ID来查询，会导致每次要使用对象前都要根据ID来一次查询，势必引起业务的复杂化，把已经本来就很复杂的代码结构更加复杂化。&lt;/p&gt;
+
+&lt;p&gt;Spring Data中提供了诸如 Aggregate Roots 和相关 Domain Events 事件机制。但是并没有给出一个好的解决聚合引用的方案。&lt;/p&gt;
+
+&lt;h2 id=&quot;方案&quot;&gt;方案&lt;/h2&gt;
+
+&lt;p&gt;本文实现方案是仿照C语言的指针概念，实现了完全面向对象化的聚合对象引用。总体架构图如下：&lt;/p&gt;
+
+&lt;div class=&quot;plantuml&quot;&gt;&lt;svg contentStyleType=&apos;text/css&apos; height=&apos;470px&apos; preserveAspectRatio=&apos;none&apos; style=&apos;width:273px;height:470px;background:#FFFFFF;&apos; version=&apos;1.1&apos; viewBox=&apos;0 0 273 470&apos; width=&apos;273px&apos; xmlns:xlink=&apos;http://www.w3.org/1999/xlink&apos; xmlns=&apos;http://www.w3.org/2000/svg&apos; zoomAndPan=&apos;magnify&apos;&gt;&lt;defs/&gt;&lt;g&gt;&lt;!--MD5=[f30a455e284cff24563ab618219b29b5]
+class ref--&gt;&lt;g id=&apos;elem_ref&apos;&gt;&lt;rect codeLine=&apos;2&apos; fill=&apos;#F1F1F1&apos; height=&apos;64.4883&apos; id=&apos;ref&apos; rx=&apos;2.5&apos; ry=&apos;2.5&apos; style=&apos;stroke:#181818;stroke-width:0.5;&apos; width=&apos;100&apos; x=&apos;84.5&apos; y=&apos;399&apos;/&gt;&lt;ellipse cx=&apos;99.5&apos; cy=&apos;415&apos; fill=&apos;#ADD1B2&apos; rx=&apos;11&apos; ry=&apos;11&apos; style=&apos;stroke:#181818;stroke-width:1.0;&apos;/&gt;&lt;path d=&apos;M101.9731,421.1431 Q101.3921,421.4419 100.7529,421.5913 Q100.1138,421.7407 99.4082,421.7407 Q96.9014,421.7407 95.5815,420.0889 Q94.2617,418.437 94.2617,415.3159 Q94.2617,412.1865 95.5815,410.5347 Q96.9014,408.8828 99.4082,408.8828 Q100.1138,408.8828 100.7612,409.0322 Q101.4087,409.1816 101.9731,409.4805 L101.9731,412.2031 Q101.3423,411.6221 100.7488,411.3523 Q100.1553,411.0825 99.5244,411.0825 Q98.1797,411.0825 97.4949,412.1492 Q96.8101,413.2158 96.8101,415.3159 Q96.8101,417.4077 97.4949,418.4744 Q98.1797,419.541 99.5244,419.541 Q100.1553,419.541 100.7488,419.2712 Q101.3423,419.0015 101.9731,418.4204 Z &apos; fill=&apos;#000000&apos;/&gt;&lt;text fill=&apos;#000000&apos; font-family=&apos;sans-serif&apos; font-size=&apos;14&apos; lengthAdjust=&apos;spacing&apos; textLength=&apos;56&apos; x=&apos;113.5&apos; y=&apos;420.291&apos;&gt;对象引用&lt;/text&gt;&lt;rect fill=&apos;#FFFFFF&apos; height=&apos;16.1328&apos; style=&apos;stroke:#000000;stroke-width:1.0;stroke-dasharray:2.0,2.0;&apos; width=&apos;10&apos; x=&apos;177.5&apos; y=&apos;396&apos;/&gt;&lt;text fill=&apos;#000000&apos; font-family=&apos;sans-serif&apos; font-size=&apos;12&apos; font-style=&apos;italic&apos; lengthAdjust=&apos;spacing&apos; textLength=&apos;8&apos; x=&apos;178.5&apos; y=&apos;408.6016&apos;&gt;T&lt;/text&gt;&lt;line style=&apos;stroke:#181818;stroke-width:0.5;&apos; x1=&apos;85.5&apos; x2=&apos;183.5&apos; y1=&apos;431&apos; y2=&apos;431&apos;/&gt;&lt;line style=&apos;stroke:#181818;stroke-width:0.5;&apos; x1=&apos;85.5&apos; x2=&apos;183.5&apos; y1=&apos;439&apos; y2=&apos;439&apos;/&gt;&lt;ellipse cx=&apos;95.5&apos; cy=&apos;450&apos; fill=&apos;#84BE84&apos; rx=&apos;3&apos; ry=&apos;3&apos; style=&apos;stroke:#038048;stroke-width:1.0;&apos;/&gt;&lt;text fill=&apos;#000000&apos; font-family=&apos;sans-serif&apos; font-size=&apos;14&apos; lengthAdjust=&apos;spacing&apos; textLength=&apos;53&apos; x=&apos;104.5&apos; y=&apos;456.5352&apos;&gt;get() : T&lt;/text&gt;&lt;/g&gt;&lt;!--MD5=[437c56a43cb614ba172407b0270749a7]
+class cached_ref--&gt;&lt;g id=&apos;elem_cached_ref&apos;&gt;&lt;rect codeLine=&apos;6&apos; fill=&apos;#F1F1F1&apos; height=&apos;64.4883&apos; id=&apos;cached_ref&apos; rx=&apos;2.5&apos; ry=&apos;2.5&apos; style=&apos;stroke:#181818;stroke-width:0.5;&apos; width=&apos;156&apos; x=&apos;56.5&apos; y=&apos;275&apos;/&gt;&lt;ellipse cx=&apos;71.5&apos; cy=&apos;291&apos; fill=&apos;#ADD1B2&apos; rx=&apos;11&apos; ry=&apos;11&apos; style=&apos;stroke:#181818;stroke-width:1.0;&apos;/&gt;&lt;path d=&apos;M73.9731,297.1431 Q73.3921,297.4419 72.7529,297.5913 Q72.1138,297.7407 71.4082,297.7407 Q68.9014,297.7407 67.5815,296.0889 Q66.2617,294.437 66.2617,291.3159 Q66.2617,288.1865 67.5815,286.5347 Q68.9014,284.8828 71.4082,284.8828 Q72.1138,284.8828 72.7612,285.0322 Q73.4087,285.1816 73.9731,285.4805 L73.9731,288.2031 Q73.3423,287.6221 72.7488,287.3523 Q72.1553,287.0825 71.5244,287.0825 Q70.1797,287.0825 69.4949,288.1492 Q68.8101,289.2158 68.8101,291.3159 Q68.8101,293.4077 69.4949,294.4744 Q70.1797,295.541 71.5244,295.541 Q72.1553,295.541 72.7488,295.2712 Q73.3423,295.0015 73.9731,294.4204 Z &apos; fill=&apos;#000000&apos;/&gt;&lt;text fill=&apos;#000000&apos; font-family=&apos;sans-serif&apos; font-size=&apos;14&apos; lengthAdjust=&apos;spacing&apos; textLength=&apos;112&apos; x=&apos;85.5&apos; y=&apos;296.291&apos;&gt;带缓存的对象引用&lt;/text&gt;&lt;rect fill=&apos;#FFFFFF&apos; height=&apos;16.1328&apos; style=&apos;stroke:#000000;stroke-width:1.0;stroke-dasharray:2.0,2.0;&apos; width=&apos;10&apos; x=&apos;205.5&apos; y=&apos;272&apos;/&gt;&lt;text fill=&apos;#000000&apos; font-family=&apos;sans-serif&apos; font-size=&apos;12&apos; font-style=&apos;italic&apos; lengthAdjust=&apos;spacing&apos; textLength=&apos;8&apos; x=&apos;206.5&apos; y=&apos;284.6016&apos;&gt;T&lt;/text&gt;&lt;line style=&apos;stroke:#181818;stroke-width:0.5;&apos; x1=&apos;57.5&apos; x2=&apos;211.5&apos; y1=&apos;307&apos; y2=&apos;307&apos;/&gt;&lt;line style=&apos;stroke:#181818;stroke-width:0.5;&apos; x1=&apos;57.5&apos; x2=&apos;211.5&apos; y1=&apos;315&apos; y2=&apos;315&apos;/&gt;&lt;ellipse cx=&apos;67.5&apos; cy=&apos;326&apos; fill=&apos;#84BE84&apos; rx=&apos;3&apos; ry=&apos;3&apos; style=&apos;stroke:#038048;stroke-width:1.0;&apos;/&gt;&lt;text fill=&apos;#000000&apos; font-family=&apos;sans-serif&apos; font-size=&apos;14&apos; lengthAdjust=&apos;spacing&apos; textLength=&apos;53&apos; x=&apos;76.5&apos; y=&apos;332.5352&apos;&gt;get() : T&lt;/text&gt;&lt;/g&gt;&lt;!--MD5=[31f6fe88ea703674f0a35513d2241e94]
+class id_ref--&gt;&lt;g id=&apos;elem_id_ref&apos;&gt;&lt;rect codeLine=&apos;10&apos; fill=&apos;#F1F1F1&apos; height=&apos;64.4883&apos; id=&apos;id_ref&apos; rx=&apos;2.5&apos; ry=&apos;2.5&apos; style=&apos;stroke:#181818;stroke-width:0.5;&apos; width=&apos;148&apos; x=&apos;60.5&apos; y=&apos;151&apos;/&gt;&lt;ellipse cx=&apos;75.5&apos; cy=&apos;167&apos; fill=&apos;#ADD1B2&apos; rx=&apos;11&apos; ry=&apos;11&apos; style=&apos;stroke:#181818;stroke-width:1.0;&apos;/&gt;&lt;path d=&apos;M77.9731,173.1431 Q77.3921,173.4419 76.7529,173.5913 Q76.1138,173.7407 75.4082,173.7407 Q72.9014,173.7407 71.5815,172.0889 Q70.2617,170.437 70.2617,167.3159 Q70.2617,164.1865 71.5815,162.5347 Q72.9014,160.8828 75.4082,160.8828 Q76.1138,160.8828 76.7612,161.0322 Q77.4087,161.1816 77.9731,161.4805 L77.9731,164.2031 Q77.3423,163.6221 76.7488,163.3523 Q76.1553,163.0825 75.5244,163.0825 Q74.1797,163.0825 73.4949,164.1492 Q72.8101,165.2158 72.8101,167.3159 Q72.8101,169.4077 73.4949,170.4744 Q74.1797,171.541 75.5244,171.541 Q76.1553,171.541 76.7488,171.2712 Q77.3423,171.0015 77.9731,170.4204 Z &apos; fill=&apos;#000000&apos;/&gt;&lt;text fill=&apos;#000000&apos; font-family=&apos;sans-serif&apos; font-size=&apos;14&apos; lengthAdjust=&apos;spacing&apos; textLength=&apos;84&apos; x=&apos;89.5&apos; y=&apos;172.291&apos;&gt;带ID对象引用&lt;/text&gt;&lt;rect fill=&apos;#FFFFFF&apos; height=&apos;16.1328&apos; style=&apos;stroke:#000000;stroke-width:1.0;stroke-dasharray:2.0,2.0;&apos; width=&apos;30&apos; x=&apos;181.5&apos; y=&apos;148&apos;/&gt;&lt;text fill=&apos;#000000&apos; font-family=&apos;sans-serif&apos; font-size=&apos;12&apos; font-style=&apos;italic&apos; lengthAdjust=&apos;spacing&apos; textLength=&apos;28&apos; x=&apos;182.5&apos; y=&apos;160.6016&apos;&gt;T, ID&lt;/text&gt;&lt;line style=&apos;stroke:#181818;stroke-width:0.5;&apos; x1=&apos;61.5&apos; x2=&apos;207.5&apos; y1=&apos;183&apos; y2=&apos;183&apos;/&gt;&lt;line style=&apos;stroke:#181818;stroke-width:0.5;&apos; x1=&apos;61.5&apos; x2=&apos;207.5&apos; y1=&apos;191&apos; y2=&apos;191&apos;/&gt;&lt;ellipse cx=&apos;71.5&apos; cy=&apos;202&apos; fill=&apos;#84BE84&apos; rx=&apos;3&apos; ry=&apos;3&apos; style=&apos;stroke:#038048;stroke-width:1.0;&apos;/&gt;&lt;text fill=&apos;#000000&apos; font-family=&apos;sans-serif&apos; font-size=&apos;14&apos; lengthAdjust=&apos;spacing&apos; textLength=&apos;59&apos; x=&apos;80.5&apos; y=&apos;208.5352&apos;&gt;id() ： ID&lt;/text&gt;&lt;/g&gt;&lt;!--MD5=[9d6852aaa689380095493ad6f5599d0a]
+class jpa_ref--&gt;&lt;g id=&apos;elem_jpa_ref&apos;&gt;&lt;rect codeLine=&apos;14&apos; fill=&apos;#F1F1F1&apos; height=&apos;80.9766&apos; id=&apos;jpa_ref&apos; rx=&apos;2.5&apos; ry=&apos;2.5&apos; style=&apos;stroke:#181818;stroke-width:0.5;&apos; width=&apos;255&apos; x=&apos;7&apos; y=&apos;10&apos;/&gt;&lt;ellipse cx=&apos;75.25&apos; cy=&apos;26&apos; fill=&apos;#ADD1B2&apos; rx=&apos;11&apos; ry=&apos;11&apos; style=&apos;stroke:#181818;stroke-width:1.0;&apos;/&gt;&lt;path d=&apos;M77.7231,32.1431 Q77.1421,32.4419 76.5029,32.5913 Q75.8638,32.7407 75.1582,32.7407 Q72.6514,32.7407 71.3315,31.0889 Q70.0117,29.437 70.0117,26.3159 Q70.0117,23.1865 71.3315,21.5347 Q72.6514,19.8828 75.1582,19.8828 Q75.8638,19.8828 76.5112,20.0322 Q77.1587,20.1816 77.7231,20.4805 L77.7231,23.2031 Q77.0923,22.6221 76.4988,22.3523 Q75.9053,22.0825 75.2744,22.0825 Q73.9297,22.0825 73.2449,23.1492 Q72.5601,24.2158 72.5601,26.3159 Q72.5601,28.4077 73.2449,29.4744 Q73.9297,30.541 75.2744,30.541 Q75.9053,30.541 76.4988,30.2712 Q77.0923,30.0015 77.7231,29.4204 Z &apos; fill=&apos;#000000&apos;/&gt;&lt;text fill=&apos;#000000&apos; font-family=&apos;sans-serif&apos; font-size=&apos;14&apos; lengthAdjust=&apos;spacing&apos; textLength=&apos;78&apos; x=&apos;95.75&apos; y=&apos;31.291&apos;&gt;JPA对象引用&lt;/text&gt;&lt;rect fill=&apos;#FFFFFF&apos; height=&apos;16.1328&apos; style=&apos;stroke:#000000;stroke-width:1.0;stroke-dasharray:2.0,2.0;&apos; width=&apos;30&apos; x=&apos;235&apos; y=&apos;7&apos;/&gt;&lt;text fill=&apos;#000000&apos; font-family=&apos;sans-serif&apos; font-size=&apos;12&apos; font-style=&apos;italic&apos; lengthAdjust=&apos;spacing&apos; textLength=&apos;28&apos; x=&apos;236&apos; y=&apos;19.6016&apos;&gt;T, ID&lt;/text&gt;&lt;line style=&apos;stroke:#181818;stroke-width:0.5;&apos; x1=&apos;8&apos; x2=&apos;261&apos; y1=&apos;42&apos; y2=&apos;42&apos;/&gt;&lt;rect fill=&apos;none&apos; height=&apos;6&apos; style=&apos;stroke:#C82930;stroke-width:1.0;&apos; width=&apos;6&apos; x=&apos;15&apos; y=&apos;50&apos;/&gt;&lt;text fill=&apos;#000000&apos; font-family=&apos;sans-serif&apos; font-size=&apos;14&apos; lengthAdjust=&apos;spacing&apos; textLength=&apos;229&apos; x=&apos;27&apos; y=&apos;59.5352&apos;&gt;repository : JpaRepository&amp;lt;T, ID&amp;gt;&lt;/text&gt;&lt;line style=&apos;stroke:#181818;stroke-width:0.5;&apos; x1=&apos;8&apos; x2=&apos;261&apos; y1=&apos;66.4883&apos; y2=&apos;66.4883&apos;/&gt;&lt;ellipse cx=&apos;18&apos; cy=&apos;77.4883&apos; fill=&apos;#84BE84&apos; rx=&apos;3&apos; ry=&apos;3&apos; style=&apos;stroke:#038048;stroke-width:1.0;&apos;/&gt;&lt;text fill=&apos;#000000&apos; font-family=&apos;sans-serif&apos; font-size=&apos;14&apos; lengthAdjust=&apos;spacing&apos; textLength=&apos;53&apos; x=&apos;27&apos; y=&apos;84.0234&apos;&gt;get() : T&lt;/text&gt;&lt;/g&gt;&lt;!--MD5=[1243381374b6917f6732ed136d32eef5]
+link cached_ref to ref--&gt;&lt;g id=&apos;link_cached_ref_ref&apos;&gt;&lt;path codeLine=&apos;19&apos; d=&apos;M134.5,339.1 C134.5,351.15 134.5,365.26 134.5,378.72 &apos; fill=&apos;none&apos; id=&apos;cached_ref-to-ref&apos; style=&apos;stroke:#181818;stroke-width:1.0;&apos;/&gt;&lt;polygon fill=&apos;none&apos; points=&apos;141.5,378.96,134.5,398.96,127.5,378.96,141.5,378.96&apos; style=&apos;stroke:#181818;stroke-width:1.0;&apos;/&gt;&lt;/g&gt;&lt;!--MD5=[49b0bcf5bc3f0e864f28b9997f47731a]
+link id_ref to cached_ref--&gt;&lt;g id=&apos;link_id_ref_cached_ref&apos;&gt;&lt;path codeLine=&apos;20&apos; d=&apos;M134.5,215.1 C134.5,227.15 134.5,241.26 134.5,254.72 &apos; fill=&apos;none&apos; id=&apos;id_ref-to-cached_ref&apos; style=&apos;stroke:#181818;stroke-width:1.0;&apos;/&gt;&lt;polygon fill=&apos;none&apos; points=&apos;141.5,254.96,134.5,274.96,127.5,254.96,141.5,254.96&apos; style=&apos;stroke:#181818;stroke-width:1.0;&apos;/&gt;&lt;/g&gt;&lt;!--MD5=[9c23c3ba0c89464e2b87fd6aecb85759]
+link jpa_ref to id_ref--&gt;&lt;g id=&apos;link_jpa_ref_id_ref&apos;&gt;&lt;path codeLine=&apos;21&apos; d=&apos;M134.5,91.01 C134.5,103.46 134.5,117.4 134.5,130.56 &apos; fill=&apos;none&apos; id=&apos;jpa_ref-to-id_ref&apos; style=&apos;stroke:#181818;stroke-width:1.0;&apos;/&gt;&lt;polygon fill=&apos;none&apos; points=&apos;141.5,130.91,134.5,150.91,127.5,130.91,141.5,130.91&apos; style=&apos;stroke:#181818;stroke-width:1.0;&apos;/&gt;&lt;/g&gt;&lt;/g&gt;&lt;/svg&gt;&lt;/div&gt;
+&lt;p&gt;其中，对象引用是基础接口，所有需要用到对象的时候，就调用 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;.get()&lt;/code&gt; 接口获取。最终在数据层实现自带jpa存取接口，通过id查询获得对象。&lt;/p&gt;
+
+&lt;h2 id=&quot;使用&quot;&gt;使用&lt;/h2&gt;
+
+&lt;p&gt;将开始的案例修改一下：&lt;/p&gt;
+
+&lt;div class=&quot;language-java highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;table class=&quot;rouge-table&quot;&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class=&quot;rouge-gutter gl&quot;&gt;&lt;pre class=&quot;lineno&quot;&gt;1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;rouge-code&quot;&gt;&lt;pre&gt;
+&lt;span class=&quot;kd&quot;&gt;interface&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Refer&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;T&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;no&quot;&gt;T&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;get&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;();&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+
+&lt;span class=&quot;nd&quot;&gt;@Value&lt;/span&gt;
+&lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;JpaRefer&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;T&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;ID&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;implements&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Refer&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;T&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;kd&quot;&gt;private&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;ID&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;id&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;
+    &lt;span class=&quot;kd&quot;&gt;private&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;JpaRepository&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;T&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;ID&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;repository&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;
+
+    &lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;T&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;get&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;repository&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;findById&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;id&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
+    &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+
+&lt;span class=&quot;nd&quot;&gt;@Data&lt;/span&gt;
+&lt;span class=&quot;kd&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;PersonOO&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;nc&quot;&gt;Long&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;id&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;
+    &lt;span class=&quot;nc&quot;&gt;String&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;
+    &lt;span class=&quot;nc&quot;&gt;JpaRefer&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;nc&quot;&gt;School&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;school&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+
+&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;在实际使用的时候，除了要多调用一次 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;get&lt;/code&gt; 之外，从使用体验角度来说，没有太多的改变。但是实现了聚合间对象引用的解耦。&lt;/p&gt;
+
+</description>
+        <pubDate>Fri, 04 Nov 2022 00:00:00 +0800</pubDate>
+        <link>http://localhost:4000/2022/11/04/DDD-Object-Reference/</link>
+        <guid isPermaLink="true">http://localhost:4000/2022/11/04/DDD-Object-Reference/</guid>
+        
+        <category>方法</category>
+        
+        <category>架构</category>
+        
+        <category>DDD</category>
+        
+        <category>MapStruct</category>
+        
+        <category>领域对象</category>
+        
+        <category>聚合根</category>
+        
+        
+      </item>
+    
+      <item>
+        <title>企业要为现金流建模</title>
+        <description>&lt;h2 id=&quot;前言&quot;&gt;前言&lt;/h2&gt;
+
+&lt;p&gt;本文是承接上一篇&lt;a href=&quot;/2019/05/22/Model-for-Enterprise&quot;&gt;如何为企业建立数学模型&lt;/a&gt;。很久以来我一直有这样的想法，如果我有一个企业，一定要在新的年度开始之前，为我的企业定好这一年的现金流计划。&lt;/p&gt;
+
+&lt;h2 id=&quot;现金流计划&quot;&gt;现金流计划&lt;/h2&gt;
+
+&lt;p&gt;一般商业企业存在的目的就是盈利。大家都知道这个公式&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;table class=&quot;rouge-table&quot;&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class=&quot;rouge-gutter gl&quot;&gt;&lt;pre class=&quot;lineno&quot;&gt;1
+&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;rouge-code&quot;&gt;&lt;pre&gt;利润 = 收入 - 支出
+&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;这个公式里隐藏了很多信息。我们先看&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;支出&lt;/code&gt;。所谓的支出，就是公司必须支付出去的钱，这些钱很多是重要支出，不可以省的，比如员工的工资。所以要确保公司的这些核心支出不中断，就必须保证公司的&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;收入&lt;/code&gt;不中断。这样，公司的经营才能够持续而不受威胁。&lt;/p&gt;
+
+&lt;p&gt;因此，确保现金流不中断，是企业经营者要确保的核心工作之一。&lt;/p&gt;
+
+&lt;p&gt;那么如何规划现金流计划？&lt;/p&gt;
+
+&lt;p&gt;假如我们现在是一个项目型软件公司，靠出卖码农的劳动力为生。公司现在有现金储备￥150万，公司规模15人，平均工资￥10000元。每个项目平均单价40万，项目平均完成周期3个月，项目商务费用占比40%，公司同时开展2个项目。这个企业的主要现金流计划如下图所示。&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/img/cash-flow-2-40w-per-3-month.png&quot; alt=&quot;2*40万/3个月&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;在做这个计划的时候，发现一个有趣的现象，按照上面的设定，如果项目周期延长到4个月，或者项目平均单价下降到30万，企业立刻就变得持平甚至亏损。很多时候一些费用其实很难降低，而项目延期又是很高概率的事情。图上的虚线是10%利润率的线，实际上，这个模拟企业的利润率只有传统行业的水平。&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/img/cash-flow-2-40w-per-4-month.png&quot; alt=&quot;2*40万/4个月&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;突然想起以前看过的一个管理方面的书，书名都已经忘记了，唯一记得的一句是：企业内部只有成本！一句话受益匪浅。附件是&lt;a href=&quot;/img/%E4%BC%81%E4%B8%9A%E8%A6%81%E4%B8%BA%E7%8E%B0%E9%87%91%E6%B5%81%E5%BB%BA%E6%A8%A1.xlsx&quot;&gt;我的excel&lt;/a&gt;，大家可以下载下来玩一下，模拟经营一家自己的软件公司。&lt;/p&gt;
+
+&lt;h2 id=&quot;收入规划&quot;&gt;收入规划&lt;/h2&gt;
+
+&lt;p&gt;现金流计划做好了之后，基本的支出控制相对容易，但是整个计划要真正落地，收入的规划非常重要。&lt;/p&gt;
+
+&lt;p&gt;一个项目要成功拿下，基本要经过几个阶段：商机寻找项目洽谈项目交付尾款支付。&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/img/cash-flow-project-flow.png&quot; alt=&quot;项目接单阶段&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;这几个阶段之间并不是100%能够从上一个阶段到下一个阶段，比如寻找到100个商机，能够进入洽谈阶段的也许只有40个，能够签订合同的只有5个，项目顺利如期交付的可能只有4个，尾款能够收完整的可能就剩3个了。这个例子里，每个阶段之间的转化率分别是40%、12.5%、80%、70%。&lt;/p&gt;
+
+&lt;p&gt;因为每个阶段的推进都有专门的人负责，所以根据转化率的高低变化，可以做绩效考核的指标。但是为了确保公司的项目不中断，就意味着按照上面的转化率，公司的销售团队要每半年获得100个左右的商机，平均2天获取一条商机信息。&lt;/p&gt;
+
+&lt;h2 id=&quot;后记&quot;&gt;后记&lt;/h2&gt;
+
+&lt;p&gt;本文只是做了一个简单的例子，实际的企业管理还是蛮复杂的，但是从简化模型开始，一步步进化，最终就可以形成一个适合企业自己特点的模型。不过我发现中国人的一个特点，当你提出一种方法，人家照着你的方法做了，发现效果不好的时候，通常他会质疑你的方法，而不是深究自己的原因。当然更不会去尝试吃透你的方法，进而发展自己的方法。&lt;/p&gt;
+
+&lt;p&gt;业界流传当年华为实施IPD的时候有一句名言，叫“先僵化，后优化“，正是因为这句话，华为克服了重重困难，将企业提升到了新的高度。华为的企业管理能力，是在开放基础上，吸收全球智慧得到的结果。如果当时半途而废，或者提前开始什么”华为自己的IPD“的话，这次恐怕连被美国制裁的资格都拿不到，谁会在意一个小作坊呢。&lt;/p&gt;
+
+&lt;p&gt;对手眼里有你，其实某种程度上也是一种肯定，也是一种荣耀！&lt;/p&gt;
+
+</description>
+        <pubDate>Tue, 28 May 2019 00:00:00 +0800</pubDate>
+        <link>http://localhost:4000/2019/05/28/Model-For-Cash-Flow/</link>
+        <guid isPermaLink="true">http://localhost:4000/2019/05/28/Model-For-Cash-Flow/</guid>
+        
+        <category>方法</category>
+        
+        <category>建模</category>
+        
+        <category>业务</category>
+        
+        
+      </item>
+    
+      <item>
+        <title>关于通用框架的一些想法</title>
+        <description>&lt;h2 id=&quot;前言&quot;&gt;前言&lt;/h2&gt;
+
+&lt;p&gt;前几天跟朋友谈起框架的事情，回顾了一下当前框架的发展，尤其是Spring Boot，已经把程序员的开发简化到了最初的一个 class 的形式了。这个也是我为什么喜欢领域驱动设计（DDD）的原因，真正回归了本源。回头看历史上的各种框架，从struts开始，到Tapestry、Wicket、SpringMVC，最后到Spring Boot，就是逐渐破坏面向对象（OO）的封装性，再慢慢回归到面向对象的历程。&lt;/p&gt;
+
+&lt;h2 id=&quot;通用框架的一些概念&quot;&gt;通用框架的一些概念&lt;/h2&gt;
+
+&lt;p&gt;我画了一个图，是应用程序的结构，貌似是Spring Cloud/Boot的结构，实际上并不仅仅如此。&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/img/post-about-universal-framework-01.png&quot; alt=&quot;应用程序结构&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;我们从底向上分析这个图：&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;底层是操作系统，目前流行Docker，以及基于Docker的各种派生工具，比如Kubernates、Rancher等。但是微创新不能改变本质，也就是Docker带来了和纯OS之上部署完全不同的一种方式。但是依然属于“部署”的领域。在这个领域中，我们要思考的是拓扑结构、设备内存大小、磁盘空间、网络参数、文件句柄等。&lt;/li&gt;
+  &lt;li&gt;操作系统之上，就是应用系统的各种部件。现在的应用系统，都是异构的，如数据库用Mysql、Oracle，缓存Redis，传输Kafka、MQ等等。这些异构的外部第三方程序需要和自己开发的应用进行集成。这是“系统集成”的领域。在这个领域中，我们要思考的是地址、端口、应用系统的配置参数等。&lt;/li&gt;
+  &lt;li&gt;在自己开发的应用程序结构中，如果用java开发，则要基于Java运行时之上，结合外部的各种库，然后才能在其上开发自己的业务逻辑。这些业务逻辑代码通过编译打包功能，和外部库文件一起构成应用程序。这是“应用集成”的领域。在这个领域中，我们要在代码级别思考API、性能、参数、返回值、调用方式等。&lt;/li&gt;
+  &lt;li&gt;最上层才是自己真正开发的应用逻辑部分。现在一切都回归到“对象”，程序员们只需要把业务逻辑写在class里就可以。但是写出这些代码之前，我们需要进行设计，思考各个class之间的关系，思考界面和后台逻辑的调用方式，思考界面的布局、交互等。这些才是开发真正要关注和要做的事情。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;把上图换一种画法，可以更加容易看懂。一层层象蛋壳一样的结构表示不同模块所处的依赖层面。现代软件框架已经发展成了一个庞大的体系，我们需要人工编程的部分，就像鸡蛋的蛋黄一样，核心但是只有一点点。&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/img/post-about-universal-framework-02.png&quot; alt=&quot;应用程序结构2&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;那么，我们刚才已经说了：&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;基于现代框架的编程，已经回归且简单到只需要写一个class的地步了&lt;/li&gt;
+  &lt;li&gt;在手工编写内容之外，都是集成工作&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;通用架构也不过是如此。&lt;/p&gt;
+
+&lt;h2 id=&quot;关于通用框架的一些设想&quot;&gt;关于通用框架的一些设想&lt;/h2&gt;
+
+&lt;p&gt;目前框架方面的顶尖水平依然在Java界，以Spring Boot为代表。现在流行的Spring Cloud的核心依然是Spring Boot。记得2015年的时候，我用Dubbo给客户搭建了一个框架，后来在研究Spring Cloud的时候，发现两个的框架的思路基本一致，编程方法类似。那么，从开发者的角度，能否屏蔽这种差异？&lt;/p&gt;
+
+&lt;p&gt;一旦屏蔽了框架实现的差异之后，开发者只需要用纯OO结构去实现自己的业务，框架根据Annotation自动决定加载和运行。也就是说，我们可以把“框架”归类到运行时（Runtime）部分，而不再需要把框架代码也打包到系统里。框架和代码之间的解耦，可以让应用程序的适应性更广：同一套代码，套用不同的框架，就具备了不同的特性，如高可靠、高吞吐量、离线处理等等。&lt;/p&gt;
+
+&lt;p&gt;看起来很美！&lt;/p&gt;
+</description>
+        <pubDate>Mon, 27 May 2019 00:00:00 +0800</pubDate>
+        <link>http://localhost:4000/2019/05/27/About-Universal-Framework/</link>
+        <guid isPermaLink="true">http://localhost:4000/2019/05/27/About-Universal-Framework/</guid>
+        
+        <category>架构</category>
+        
+        <category>软件设计</category>
+        
+        <category>面向对象</category>
+        
+        
+      </item>
+    
+      <item>
+        <title>如何为企业建立数学模型</title>
+        <description>&lt;h2 id=&quot;前言&quot;&gt;前言&lt;/h2&gt;
+
+&lt;p&gt;现在是大数据时代，或者说是AI时代，反正这个“时代”前面的技术名词变化还挺快的，稍微不注意可能就“被落伍”了。但是人们的观念都是在一波一波的潮流冲刷中，逐渐发生了改变。在我的观察中，越来越多的企业开始注重“数据”，有些企业甚至已经开始了“数据资产化”进程，把数据当成企业的资产那样保护、增值。&lt;/p&gt;
+
+&lt;p&gt;在纷繁凌乱满天飞的术语中，我看到了一个词语在那里静静地等待，这个词是【模型】。无论XX时代的前缀怎么变化，背后都缺少不了“模型”这个东西。模型是数字世界里一切的核心，也是企业复杂业务运作背后默默遵循的基本原则，它看起来就是一组数学公式。&lt;/p&gt;
+
+&lt;p&gt;但是建模真的很难吗？&lt;/p&gt;
+
+&lt;p&gt;这里“建模”要分为两个层面谈，一个层面是“概念模型”层面，另一个是具体模型层面，或者说是模型的实现层面。前者是属于业务模型，一般由业务分析人员实现，后者是技术模型，由数据分析师根据业务分析模型，再进行数据探索，选择合适的数学分析算法，再落实到代码层面。&lt;/p&gt;
+
+&lt;p&gt;本文我们讨论如何为企业建立一个合适的“概念模型”。&lt;/p&gt;
+
+&lt;h2 id=&quot;背景&quot;&gt;背景&lt;/h2&gt;
+
+&lt;p&gt;我们以一个企业为例，讨论如何给这个企业建立一个数学模型，然后根据数学模型，再去看看这个企业如何改进。&lt;/p&gt;
+
+&lt;p&gt;本文的目标企业是一个纯软件公司，有自己的软件产品开发和销售，也有软件定制开发项目业务。所有的部门按照业务条块分割，形成若干个事业部，独立核算。这是一个典型的软件公司，我们将尝试为这个企业业务运作建立一组公式。&lt;/p&gt;
+
+&lt;h2 id=&quot;建模&quot;&gt;建模&lt;/h2&gt;
+
+&lt;h3 id=&quot;公式分解和细化&quot;&gt;公式分解和细化&lt;/h3&gt;
+
+&lt;p&gt;绝大多数企业存在的目的就是获取利润。所以企业建模的核心就是这个公式：&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;table class=&quot;rouge-table&quot;&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class=&quot;rouge-gutter gl&quot;&gt;&lt;pre class=&quot;lineno&quot;&gt;1
+&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;rouge-code&quot;&gt;&lt;pre&gt;利润 = 收入 - 支出
+&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;根据我们目标企业的情况，这个公式可以进一步复杂化：&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;table class=&quot;rouge-table&quot;&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class=&quot;rouge-gutter gl&quot;&gt;&lt;pre class=&quot;lineno&quot;&gt;1
+2
+&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;rouge-code&quot;&gt;&lt;pre&gt;利润 = 归公司的利润 + 事业部A利润 + ... 事业部n利润
+利润 = (归公司的收入 - 归公司的支出) + (事业部A收入 - 事业部A支出) + ... （事业部n收入 - 事业部n支出）
+&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;收入和支出也可以继续细化分解，按照产品和项目划分：&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;table class=&quot;rouge-table&quot;&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class=&quot;rouge-gutter gl&quot;&gt;&lt;pre class=&quot;lineno&quot;&gt;1
+2
+&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;rouge-code&quot;&gt;&lt;pre&gt;产品型事业部的利润 = （产品售价 - 产品开发费用分摊 - 产品销售成本） * 产品销售套数
+项目型事业部的利润 = （项目合同平均金额 - 项目平均营销成本 - 项目平均开发费用 * 项目平均周期）* 年度项目数量
+&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;其中公式的每一个部分都可以单独展开分解，这里以&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;年度项目数量&lt;/code&gt;为例：&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;table class=&quot;rouge-table&quot;&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class=&quot;rouge-gutter gl&quot;&gt;&lt;pre class=&quot;lineno&quot;&gt;1
+&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;rouge-code&quot;&gt;&lt;pre&gt;年度项目数量 = 接触客户数量 * 成单概率 = 商机数量 * 商机有效率 * 接触客户成功率 * 成单概率
+&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;实际上，项目的情况和月度、季度也有关，我们把时间因素加入到公式：&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;table class=&quot;rouge-table&quot;&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class=&quot;rouge-gutter gl&quot;&gt;&lt;pre class=&quot;lineno&quot;&gt;1
+&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;rouge-code&quot;&gt;&lt;pre&gt;年度项目数量 = 月累计(本月商机数量 * 本月商机有效率 * 本月接触客户成功率 * 本月成单概率)
+&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;因为项目的落地需要客户经理做工作，所以不同的客户经理也有很大的区别，我们把客户经理按照业绩分为不同的等级，然后加入到公式：&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;table class=&quot;rouge-table&quot;&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class=&quot;rouge-gutter gl&quot;&gt;&lt;pre class=&quot;lineno&quot;&gt;1
+&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;rouge-code&quot;&gt;&lt;pre&gt;年度项目数量 = 月累计(客户经理等级累计(商机数量 * 本月商机有效率 * 本月接触客户成功率 * 本月成单概率))
+&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h3 id=&quot;模型细化思路&quot;&gt;模型细化思路&lt;/h3&gt;
+
+&lt;p&gt;总体的建模分解思路，就是把企业的各种指标，从一个顶层的公式，逐层分解成细微的公式。公式分解细化按照两个维度展开：&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;时间维度
+将上级公式分解成按照时间累加的形式，例如年分解成12个月份，月份分解为上中下三旬，月份分解为4周等等。&lt;/li&gt;
+  &lt;li&gt;领域维度
+按照要素相关的领域进行细分，例如公司拆分成组织，组织拆分到个人，组织拆分到技术等级、业绩分级等。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;使用&quot;&gt;使用&lt;/h2&gt;
+
+&lt;p&gt;建立好一个企业适用的数学模型之后，根据这一组公式里包含了哪些要素，企业就可以有的放矢，把这些要素相关的数据进行收集、整理、存储、分析了。比如合同信息、客户走访信息、商机信息等，都可以逐渐开始收集。对于以前没有关注到的数据，也可以通过制度，逐渐落实下去。&lt;/p&gt;
+
+&lt;p&gt;当数据都已经收集起来之后，通过模型，我们也可以确定不同角色的考核指标。例如销售人员就可以考核成单率、商机有效率、每项目利润率等。协助公司的治理。&lt;/p&gt;
+
+&lt;p&gt;当然，正事是对这些数据进行探索，比如每个月的成单率变化规律，将这个规律总结出算法，再变成代码，实现出一个预测成单率的软件功能。&lt;/p&gt;
+</description>
+        <pubDate>Wed, 22 May 2019 00:00:00 +0800</pubDate>
+        <link>http://localhost:4000/2019/05/22/Model-for-Enterprise/</link>
+        <guid isPermaLink="true">http://localhost:4000/2019/05/22/Model-for-Enterprise/</guid>
+        
+        <category>方法</category>
+        
+        <category>建模</category>
+        
+        <category>业务</category>
+        
+        
+      </item>
+    
+      <item>
+        <title>面向对象和仿生学</title>
+        <description>&lt;p&gt;若干年前和一个高水平客户讨论了很多关于元数据的内容。在这位大师级客户的元数据模型里，世界被抽象成了资源和宿主，资源中再进行分层，按照特征划分，分解出对象、规则、事件；宿主则分为个人和法人。几个有限的基本元素之间各司其职，构成了世界的千变万化。这个模型非常优雅，可以解释大多数的业务运作过程，所以它是一个有效的模型。只可惜因为商务的关系未能深入合作，最后我的这位客户找了一个合作方，天天开会对牛弹琴，不知道这几年下来，有没有出现能够听得懂他的谈话，并且将其落地的人。&lt;/p&gt;
+
+&lt;p&gt;但是这次沟通引发了我的一个观点：软件开发其实也是【仿生学】。&lt;/p&gt;
+
+&lt;p&gt;传统的仿生学，其实就是仿照动植物的各种形态，最典型的就是四足步行车。但是软件的【仿生】行为，则是对自然和社会运作的仿真和模拟。最典型的就是日渐没落的OA系统，通过模拟一个组织内部的审批过程，让信息流可以快速流转、存储和分析。它的模拟对象就是信息和各种流转接点，以及节点与信息、节点与节点之间的关系，（一些高级的OA系统可能会涉及信息与信息之间的关系建模，但通常都不会有，仅限于消息回复时候的引用而已）。&lt;/p&gt;
+
+&lt;p&gt;很自然会引出一个问题：什么样的模型可以模拟整个社会？也就是说，我们通过这个模型，理论上就可以模拟整个社会的运作，并且模型可以转化为可以支撑业务系统，甚至本身就是可执行的。这样我们可以用一种语言，一个平台统一天下所有的程序。“PHP is best”自然也就没人再说了。&lt;/p&gt;
+
+&lt;p&gt;嗯，理论上可以。但是我们至少可以在这篇文章里略微畅想一下，假如真的这种模型已经存在了，软件设计会发生什么样的有趣变化。&lt;/p&gt;
+
+&lt;p&gt;首先，是设计的边界很容易界定。每一个业务模块就好比是一块石头，对外可以看到的石头的颜色、大小都是其表现属性；通过抓握石头的几个对应的点，可以将石头移动；通过敲击、刻画等事件，评估石头的响声和刻画痕迹，可以知道它的一些内部状况，例如硬度。通过X光等第三方设备，可以分析石头内部的元素和质量分布等。大家看自然界的各种组合方式，比现在的软件要优雅和简单得多，但是最终呈现的复杂特征，却又是现代软件远远无法描述完整的。说明现代软件的描述能力，还需要继续演进，远未到我们可以停止分析和思考的时候。&lt;/p&gt;
+
+&lt;p&gt;其次，彻底理解“事件”在“面向对象”系统中的地位以及相互关系。当你和同事们喝得醉醺醺地走在大街上，连手里的酒瓶掉落都没有察觉的时候，路人的眼光却从清脆响声中，齐刷刷地落在了你的地中海上。这个例子充分说明了：自然界中事物之间的中远距相互作用，是通过事件传递的。而接收到事件与否，则要看当事人是否在这个“场”内，或者把“场”换成“事件订阅”可能更容易懂一些。&lt;/p&gt;
+
+&lt;p&gt;第三，对于多个物体之间的交互作用，参考自然界的提醒，可以设计出更稳定的交互模式。我以前曾经思考过“司机”对象和“汽车”对象的关系，我们在实现语义接口的时候，到底是“司机开汽车”还是“汽车被司机开”，还是有一点讲究的。在“司机开汽车”的语义环境中，API接口是 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;driver.drive(car)&lt;/code&gt;。而“汽车被司机开”这个语义中，API定义是 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;car.driveBy(driver)&lt;/code&gt;。看似效果一样，实际主体完全不同。这个问题我们可以单独展开讨论。&lt;/p&gt;
+
+&lt;p&gt;第四，交互的新模式。现在的交互模式显然太繁琐了，每一个人造物品，都需要操作者知道大量的细节才可以操作，甚至需要知道被操作对象的内部状态，而且有越来越烦琐的趋势。实际上，社会的运作过程中，并不要求发起者必须知道接受者的内部状态，这是交互的基本要求。例如你随时可以给10086打电话，并不需要知道人家手头有多少件事情在做；甲方也可以随时向乙方提要求，并不需要例会乙方是否已经忙成了996还是007。&lt;/p&gt;
+
+&lt;p&gt;如果我们仔细想，还会想到很多。对我来说，在软件设计时候，将设计拟人化、拟物化，最大的好处是可以获得简洁的交互模式。实际工作中，我们在思考模式的时候，被技术因素干扰得实在是太多了，多到了让我们以为这一切是天经地义的。&lt;/p&gt;
+
+</description>
+        <pubDate>Mon, 13 May 2019 00:00:00 +0800</pubDate>
+        <link>http://localhost:4000/2019/05/13/OO-Bionics/</link>
+        <guid isPermaLink="true">http://localhost:4000/2019/05/13/OO-Bionics/</guid>
+        
+        <category>思想</category>
+        
+        <category>面向对象</category>
+        
+        <category>设计</category>
+        
+        
+      </item>
+    
+      <item>
+        <title>软件企业研发体系的建立</title>
+        <description>&lt;h2 id=&quot;前言&quot;&gt;前言&lt;/h2&gt;
+
+&lt;p&gt;无论是软件企业的管理者还是一线员工，都希望自己的企业开发“速度”能够越来越快，“难度”能够降到最低。对员工来说，日复一日的重复工作引发的“烦度”也要能到最低，
+每个员工都希望可以在工作中得到成长和锻炼，而不是在简单重复劳动中消耗生命的劳动力。&lt;/p&gt;
+
+&lt;p&gt;做到这一点并不容易。对企业研发体系的要求，以及整个体系中的每一个参与者的素质要求都很高。&lt;/p&gt;
+
+&lt;p&gt;今天我们来尝试聊一下这个话题。&lt;/p&gt;
+
+&lt;h2 id=&quot;研发体系的用途&quot;&gt;研发体系的用途&lt;/h2&gt;
+
+&lt;h2 id=&quot;研发体系的搭建&quot;&gt;研发体系的搭建&lt;/h2&gt;
+
+&lt;h2 id=&quot;研发体系的维持&quot;&gt;研发体系的维持&lt;/h2&gt;
+
+</description>
+        <pubDate>Tue, 30 Apr 2019 00:00:00 +0800</pubDate>
+        <link>http://localhost:4000/2019/04/30/Software-Enterprise-Tech-Sys/</link>
+        <guid isPermaLink="true">http://localhost:4000/2019/04/30/Software-Enterprise-Tech-Sys/</guid>
+        
+        <category>体系</category>
+        
+        <category>研发</category>
+        
+        <category>企业管理</category>
+        
+        
+      </item>
+    
+      <item>
+        <title>关于效率的随想</title>
+        <description>&lt;p&gt;一次和朋友聊天，谈到效率问题的时候，我想起了人均GDP之间的对比。回来查了一下资料，发现人均GDP&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;http://www.sohu.com/a/306796272_100245901&quot;&gt;2018年各国GDP排名 看看欧洲那些热门的移民国家排行老几吧&lt;/a&gt;
+&lt;a href=&quot;http://www.sohu.com/a/250252205_129961&quot;&gt;中美GDP前10城市比较，美帝人均有点吓人&lt;/a&gt;
+&lt;a href=&quot;https://www.zhihu.com/question/21621731&quot;&gt;为什么中国人均GDP在世界上的排名如此靠后&lt;/a&gt;&lt;/p&gt;
+</description>
+        <pubDate>Tue, 30 Apr 2019 00:00:00 +0800</pubDate>
+        <link>http://localhost:4000/2019/04/30/About-Efficient/</link>
+        <guid isPermaLink="true">http://localhost:4000/2019/04/30/About-Efficient/</guid>
+        
+        <category>随想</category>
+        
+        <category>企业管理</category>
+        
+        
+      </item>
+    
+      <item>
+        <title>我的软件设计方法</title>
+        <description>&lt;h1 id=&quot;前言&quot;&gt;前言&lt;/h1&gt;
+
+&lt;p&gt;第一篇文章&lt;/p&gt;
+</description>
+        <pubDate>Sun, 31 Mar 2019 00:00:00 +0800</pubDate>
+        <link>http://localhost:4000/2019/03/31/Archetype-Preface/</link>
+        <guid isPermaLink="true">http://localhost:4000/2019/03/31/Archetype-Preface/</guid>
+        
+        <category>架构</category>
+        
+        <category>软件设计</category>
+        
+        <category>面向对象</category>
+        
+        
+      </item>
+    
+      <item>
+        <title>我的第一篇文章</title>
+        <description>&lt;h1 id=&quot;前言&quot;&gt;前言&lt;/h1&gt;
+
+&lt;p&gt;第一篇文章
+preface&lt;/p&gt;
+</description>
+        <pubDate>Tue, 01 Jan 2019 00:00:00 +0800</pubDate>
+        <link>http://localhost:4000/2019/01/01/Hello/</link>
+        <guid isPermaLink="true">http://localhost:4000/2019/01/01/Hello/</guid>
+        
+        <category>实验</category>
+        
+        
+      </item>
+    
+  </channel>
+</rss>
