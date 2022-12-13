@@ -5,8 +5,8 @@
     <description>一个老鸟的自白</description>
     <link>http://localhost:4000/</link>
     <atom:link href="http://localhost:4000/feed.xml" rel="self" type="application/rss+xml" />
-    <pubDate>Tue, 06 Dec 2022 22:56:29 +0800</pubDate>
-    <lastBuildDate>Tue, 06 Dec 2022 22:56:29 +0800</lastBuildDate>
+    <pubDate>Tue, 13 Dec 2022 21:57:10 +0800</pubDate>
+    <lastBuildDate>Tue, 13 Dec 2022 21:57:10 +0800</lastBuildDate>
     <generator>Jekyll v4.3.1</generator>
     
       <item>
@@ -169,7 +169,7 @@ link jpa_ref to id_ref--&gt;&lt;g id=&apos;link_jpa_ref_id_ref&apos;&gt;&lt;path
 
 &lt;p&gt;现金流计划做好了之后，基本的支出控制相对容易，但是整个计划要真正落地，收入的规划非常重要。&lt;/p&gt;
 
-&lt;p&gt;一个项目要成功拿下，基本要经过几个阶段：商机寻找项目洽谈项目交付尾款支付。&lt;/p&gt;
+&lt;p&gt;一个项目要成功拿下，基本要经过几个阶段：商机寻找 -&amp;gt; 项目洽谈 -&amp;gt; 项目交付 -&amp;gt; 尾款支付。&lt;/p&gt;
 
 &lt;p&gt;&lt;img src=&quot;/img/cash-flow-project-flow.png&quot; alt=&quot;项目接单阶段&quot; /&gt;&lt;/p&gt;
 

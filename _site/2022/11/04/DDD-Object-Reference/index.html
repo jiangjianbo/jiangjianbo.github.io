@@ -37,8 +37,8 @@
     <meta property="article:tag" content="聚合根">
     
     
-    <meta property="og:image" content="http://localhost:4000/img/about-bigtall-gentle.jpg">
-    <meta property="og:url" content="http://localhost:4000/2022/11/04/DDD-Object-Reference/">
+    <meta property="og:image" content="/img/about-bigtall-gentle.jpg">
+    <meta property="og:url" content="/2022/11/04/DDD-Object-Reference/">
     <meta property="og:site_name" content="老翅寒暑 | BigTall Blog">
 
     <title>DDD聚合对象的引用的一种实现方式 - 老翅寒暑 | BigTall Blog</title>
@@ -61,7 +61,7 @@
     <!-- Custom Fonts -->
     <!-- <link href="http://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
     <!-- Hux change font-awesome CDN to qiniu -->
-    <link href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet"
+    <link href="/css/font-awesome.min.css" rel="stylesheet"
         type="text/css">
 
 
@@ -75,9 +75,7 @@
     <!-- ga & ba script hoook -->
     <script></script>
 
-    <!-- Google AdSense -->
-    <script data-ad-client="ca-pub-6487568398225121" async
-        src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+
 </head>
 
 
@@ -664,7 +662,7 @@ link jpa_ref to id_ref--><g id='link_jpa_ref_id_ref'><path codeLine='21' d='M134
 
 <!--fastClick.js -->
 <script>
-    async("//cdnjs.cloudflare.com/ajax/libs/fastclick/1.0.6/fastclick.min.js", function () {
+    async("/js/fastclick.min.js", function () {
         var $nav = document.querySelector("nav");
         if ($nav) FastClick.attach($nav);
     })
@@ -673,40 +671,9 @@ link jpa_ref to id_ref--><g id='link_jpa_ref_id_ref'><path codeLine='21' d='M134
 
 <!-- Google Analytics -->
 
-<script>
-    // dynamic User by Hux
-    var _gaId = 'UA-137375520-1';
-    var _gaDomain = 'auto';
-
-    // Originial
-    (function (i, s, o, g, r, a, m) {
-        i['GoogleAnalyticsObject'] = r; i[r] = i[r] || function () {
-            (i[r].q = i[r].q || []).push(arguments)
-        }, i[r].l = 1 * new Date(); a = s.createElement(o),
-            m = s.getElementsByTagName(o)[0]; a.async = 1; a.src = g; m.parentNode.insertBefore(a, m)
-    })(window, document, 'script', '//www.google-analytics.com/analytics.js', 'ga');
-
-    ga('create', _gaId, _gaDomain);
-    ga('send', 'pageview');
-</script>
-
 
 
 <!-- Baidu Tongji -->
-
-<script>
-    // dynamic User by Hux
-    var _baId = '74342d6ddffd6472427b688c4e05dd3f';
-
-    // Originial
-    var _hmt = _hmt || [];
-    (function () {
-        var hm = document.createElement("script");
-        hm.src = "//hm.baidu.com/hm.js?" + _baId;
-        var s = document.getElementsByTagName("script")[0];
-        s.parentNode.insertBefore(hm, s);
-    })();
-</script>
 
 
 
