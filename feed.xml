@@ -3,10 +3,10 @@
   <channel>
     <title>老翅寒暑</title>
     <description>一个老鸟的自白</description>
-    <link>http://localhost:4000/</link>
-    <atom:link href="http://localhost:4000/feed.xml" rel="self" type="application/rss+xml" />
-    <pubDate>Sun, 08 Jan 2023 19:17:26 +0800</pubDate>
-    <lastBuildDate>Sun, 08 Jan 2023 19:17:26 +0800</lastBuildDate>
+    <link>http://jiangjianbo.github.io/</link>
+    <atom:link href="http://jiangjianbo.github.io/feed.xml" rel="self" type="application/rss+xml" />
+    <pubDate>Wed, 15 Feb 2023 00:32:37 +0800</pubDate>
+    <lastBuildDate>Wed, 15 Feb 2023 00:32:37 +0800</lastBuildDate>
     <generator>Jekyll v4.3.1</generator>
     
       <item>
@@ -130,12 +130,15 @@ jekyll-spaceship:
 &lt;p&gt;这里也要吐槽 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;jekyll-spaceship&lt;/code&gt;，上面这段原文里的 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;@startuml&lt;/code&gt; 这种标注直接给我解析成了它要识别的指令，加任何折衷都不行。
 这也是最终被我抛弃的原因之一。&lt;/p&gt;
 
+&lt;p&gt;另外一个原因我不用这个插件是：所有生成的plantuml图片竟然是引用&lt;a href=&quot;plantuml.com&quot;&gt;&lt;/a&gt;提供的免费图片生成的链接。
+我说你一个页面生成器，不是一次性生成个图片嵌入到网页里，每次访问去耗费人家plantuml的流量，是不是有问题啊？损人不利己啊！&lt;/p&gt;
+
 &lt;ol&gt;
   &lt;li&gt;启动命令行，在git工程目录运行命令 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;bundle install&lt;/code&gt; 下载并安装插件。&lt;/li&gt;
 &lt;/ol&gt;
 
 &lt;p&gt;如果运行的时候出现类似错误 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Warning: the fonts &quot;Times&quot; and &quot;Times&quot; are not available for the Java logical font&lt;/code&gt;，表示电脑中缺少字体。
-尤其是Mac电脑，请到 [https://www.freebestfonts.com/timr45w-font] 下载并安装字体。&lt;/p&gt;
+尤其是Mac电脑，请到 &lt;a href=&quot;https://www.freebestfonts.com/timr45w-font&quot;&gt;&lt;/a&gt; 下载并安装字体。&lt;/p&gt;
 
 &lt;h3 id=&quot;使用插件&quot;&gt;使用插件&lt;/h3&gt;
 
@@ -171,7 +174,7 @@ git push origin gh-pages
 &lt;p&gt;Github Pages默认假设 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;gh-pages&lt;/code&gt; 分支中存放的是 jekyll 格式的源码，会自动构建之。为了阻止自动构建，需要在 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;gh-pages&lt;/code&gt; 分支的根目录中
 存放一个 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;.nojekyll&lt;/code&gt; 文件。&lt;/p&gt;
 
-&lt;p&gt;为了确保工作的自动化，我在磁盘上放置了两个文件夹，一个是 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;blog-master&lt;/code&gt; 存放源代码，并和 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;master&lt;/code&gt;分支关联，一个是 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;blog-site&lt;/code&gt; 用来存放输出的静态网页，
+&lt;p&gt;为了确保工作的自动化，我在磁盘上放置了两个文件夹，一个是 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;blog-master&lt;/code&gt; 存放源代码，并和 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;master&lt;/code&gt;分支关联，一个是 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;gh-pages&lt;/code&gt; 用来存放输出的静态网页，
 并和 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;gh-pages&lt;/code&gt; 分支关联。这样两个可以互不干扰。&lt;/p&gt;
 
 &lt;div class=&quot;plantuml&quot;&gt;&lt;svg contentStyleType=&apos;text/css&apos; height=&apos;234px&apos; preserveAspectRatio=&apos;none&apos; style=&apos;width:760px;height:234px;background:#FFFFFF;&apos; version=&apos;1.1&apos; viewBox=&apos;0 0 760 234&apos; width=&apos;760px&apos; xmlns:xlink=&apos;http://www.w3.org/1999/xlink&apos; xmlns=&apos;http://www.w3.org/2000/svg&apos; zoomAndPan=&apos;magnify&apos;&gt;&lt;defs/&gt;&lt;g&gt;&lt;!--MD5=[9ac95a62b6bea9fd5cbb09176a2aa23f]
@@ -193,9 +196,19 @@ link blog_master to master--&gt;&lt;g id=&apos;link_blog_master_master&apos;&gt;
 link blog_site to gh_pages--&gt;&lt;g id=&apos;link_blog_site_gh_pages&apos;&gt;&lt;path d=&apos;M270.74,75.73 C312.36,76.43 374.8,77.48 417.7,78.2 &apos; fill=&apos;none&apos; id=&apos;blog_site-to-gh_pages&apos; style=&apos;stroke:#181818;stroke-width:1.0;stroke-dasharray:7.0,7.0;&apos;/&gt;&lt;polygon fill=&apos;#181818&apos; points=&apos;422.84,78.28,413.9099,74.1263,417.8407,78.1943,413.7728,82.1251,422.84,78.28&apos; style=&apos;stroke:#181818;stroke-width:1.0;&apos;/&gt;&lt;text fill=&apos;#000000&apos; font-family=&apos;sans-serif&apos; font-size=&apos;13&apos; lengthAdjust=&apos;spacing&apos; textLength=&apos;77&apos; x=&apos;313&apos; y=&apos;73.5684&apos;&gt;[git commit]&lt;/text&gt;&lt;/g&gt;&lt;!--MD5=[686cccd021a9542b9e8d2359c9c14b67]
 link gh_pages to github_pages--&gt;&lt;g id=&apos;link_gh_pages_github_pages&apos;&gt;&lt;path d=&apos;M510.21,79 C541.69,79 585.06,79 620.72,79 &apos; fill=&apos;none&apos; id=&apos;gh_pages-to-github_pages&apos; style=&apos;stroke:#181818;stroke-width:1.0;&apos;/&gt;&lt;polygon fill=&apos;#181818&apos; points=&apos;625.93,79,616.93,75,620.93,79,616.93,83,625.93,79&apos; style=&apos;stroke:#181818;stroke-width:1.0;&apos;/&gt;&lt;text fill=&apos;#000000&apos; font-family=&apos;sans-serif&apos; font-size=&apos;13&apos; lengthAdjust=&apos;spacing&apos; textLength=&apos;52&apos; x=&apos;543&apos; y=&apos;75.5684&apos;&gt;定期更新&lt;/text&gt;&lt;/g&gt;&lt;!--MD5=[4a3b4780863dc8f89d336825ecaebd63]
 link github_pages to github.io--&gt;&lt;g id=&apos;link_github_pages_github.io&apos;&gt;&lt;path d=&apos;M686,102.06 C686,115.94 686,133.73 686,148.49 &apos; fill=&apos;none&apos; id=&apos;github_pages-to-github.io&apos; style=&apos;stroke:#181818;stroke-width:1.0;&apos;/&gt;&lt;polygon fill=&apos;#181818&apos; points=&apos;686,153.78,690,144.78,686,148.78,682,144.78,686,153.78&apos; style=&apos;stroke:#181818;stroke-width:1.0;&apos;/&gt;&lt;text fill=&apos;#000000&apos; font-family=&apos;sans-serif&apos; font-size=&apos;13&apos; lengthAdjust=&apos;spacing&apos; textLength=&apos;26&apos; x=&apos;661.5&apos; y=&apos;133.0684&apos;&gt;推送&lt;/text&gt;&lt;/g&gt;&lt;/g&gt;&lt;/svg&gt;&lt;/div&gt;
+&lt;p&gt;简而言之，就是github里用两个分支，对应磁盘上两个不同的目录，一个目录&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;blog-master&lt;/code&gt;放博客源代码，一个目录&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;gh-pages&lt;/code&gt;放生成的页面。各自独立提交就ok了。&lt;/p&gt;
+
+&lt;h3 id=&quot;创建新文章&quot;&gt;创建新文章&lt;/h3&gt;
+
+&lt;p&gt;初学者对创建新文章的格式会把握不好，所以可以用命令行增加新文章。&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;table class=&quot;rouge-table&quot;&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class=&quot;rouge-gutter gl&quot;&gt;&lt;pre class=&quot;lineno&quot;&gt;1
+&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;rouge-code&quot;&gt;&lt;pre&gt;rake post &lt;span class=&quot;nv&quot;&gt;title&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;My first blog&quot;&lt;/span&gt;&lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt;
+&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
 &lt;h3 id=&quot;自动复制&quot;&gt;自动复制&lt;/h3&gt;
 
-&lt;p&gt;jekyll 使用指令 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;bundle exec jekyll build&lt;/code&gt; 或 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;bundle exec jekyll serve&lt;/code&gt; 处理页面代码之后的静态内容全部都放在 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;_site&lt;/code&gt; 目录下，需要手工复制到 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;blog-site&lt;/code&gt; 目录，所以我们需要自动化脚本来处理这些事情。&lt;/p&gt;
+&lt;p&gt;jekyll 使用指令 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;bundle exec jekyll build&lt;/code&gt; 或 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;bundle exec jekyll serve&lt;/code&gt; 处理页面代码之后的静态内容全部都放在 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;_site&lt;/code&gt; 目录下，需要手工复制到 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;gh-pages&lt;/code&gt; 目录，所以我们需要自动化脚本来处理这些事情。&lt;/p&gt;
 
 &lt;p&gt;编辑根目录下的 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Rakefile&lt;/code&gt; 在尾部增加：&lt;/p&gt;
 
@@ -210,9 +223,18 @@ link github_pages to github.io--&gt;&lt;g id=&apos;link_github_pages_github.io&a
 9
 10
 11
+12
+13
+14
+15
+16
+17
+18
+19
+20
 &lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;rouge-code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;c1&quot;&gt;# copy from https://www.sitepoint.com/jekyll-plugins-github/&lt;/span&gt;
 &lt;span class=&quot;c1&quot;&gt;# &lt;/span&gt;
-&lt;span class=&quot;no&quot;&gt;GH_PAGES_DIR&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;blog-site&quot;&lt;/span&gt;
+&lt;span class=&quot;no&quot;&gt;GH_PAGES_DIR&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;gh-pages&quot;&lt;/span&gt;
 
 &lt;span class=&quot;n&quot;&gt;desc&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;Build Jekyll site and copy files&quot;&lt;/span&gt;
 &lt;span class=&quot;n&quot;&gt;task&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:build&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt;
@@ -220,6 +242,15 @@ link github_pages to github.io--&gt;&lt;g id=&apos;link_github_pages_github.io&a
   &lt;span class=&quot;nb&quot;&gt;system&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;rm -r ../&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;#{&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;GH_PAGES_DIR&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;/*&quot;&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;unless&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Dir&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&apos;../#{GH_PAGES_DIR}/*&apos;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;].&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;empty?&lt;/span&gt;
   &lt;span class=&quot;nb&quot;&gt;system&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;cp -r _site/* ../&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;#{&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;GH_PAGES_DIR&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;/&quot;&lt;/span&gt;
   &lt;span class=&quot;nb&quot;&gt;system&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;echo nojekyll &amp;gt; ../&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;#{&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;GH_PAGES_DIR&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;/.nojekyll&quot;&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+
+&lt;span class=&quot;n&quot;&gt;desc&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;commit Jekyll site and push to github repository&quot;&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;task&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:publish&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;title&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;ENV&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&apos;TITLE&apos;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;||&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;at &lt;/span&gt;&lt;span class=&quot;si&quot;&gt;#{&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Date&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;today&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;
+
+  &lt;span class=&quot;nb&quot;&gt;system&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;cd ../&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;#{&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;GH_PAGES_DIR&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;
+  &lt;span class=&quot;nb&quot;&gt;system&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;git commit -m &lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\&quot;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;publish &lt;/span&gt;&lt;span class=&quot;si&quot;&gt;#{&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;title&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\&quot;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;
+  &lt;span class=&quot;nb&quot;&gt;system&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;git push origin gh-pages&quot;&lt;/span&gt;
 &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
 &lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
@@ -249,9 +280,12 @@ link github_pages to github.io--&gt;&lt;g id=&apos;link_github_pages_github.io&a
   &lt;span class=&quot;pi&quot;&gt;]&lt;/span&gt;
 &lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
+&lt;p&gt;等你的文章写完了，就到命令行，运行 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;rake build&lt;/code&gt; 命令。如果预览觉得可以，就运行 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;rake publish title=&quot;加了文章&quot;&lt;/code&gt; 提交到 github。
+记得别忘记源代码也手动去提交，脚本不管源代码的自动提交。&lt;/p&gt;
+
 &lt;h3 id=&quot;网站预览&quot;&gt;网站预览&lt;/h3&gt;
 
-&lt;p&gt;静态内容在 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;blog-site&lt;/code&gt; 目录下，并没有任何支持浏览器访问浏览的功能。为了把这个目录中的内容可网络访问，可以在 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;blog-site&lt;/code&gt; 目录下启动命令行运行&lt;/p&gt;
+&lt;p&gt;静态内容在 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;gh-pages&lt;/code&gt; 目录下，并没有任何支持浏览器访问浏览的功能。为了把这个目录中的内容可网络访问，可以在 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;gh-pages&lt;/code&gt; 目录下启动命令行运行&lt;/p&gt;
 
 &lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;table class=&quot;rouge-table&quot;&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class=&quot;rouge-gutter gl&quot;&gt;&lt;pre class=&quot;lineno&quot;&gt;1
 &lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;rouge-code&quot;&gt;&lt;pre&gt;python3 &lt;span class=&quot;nt&quot;&gt;-m&lt;/span&gt; http.server
@@ -261,9 +295,10 @@ link github_pages to github.io--&gt;&lt;g id=&apos;link_github_pages_github.io&a
 
 &lt;h2 id=&quot;自动化辅助功能&quot;&gt;自动化辅助功能&lt;/h2&gt;
 
-&lt;p&gt;rake post title=”My first blog”&lt;/p&gt;
-
-&lt;p&gt;rake build&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;自动更新 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;gh-pages&lt;/code&gt; 目录： &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;rake build&lt;/code&gt;&lt;/li&gt;
+  &lt;li&gt;自动提交 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;gh-pages&lt;/code&gt; 目录到github中： &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;rake publish title=&quot;add article MyFirstBlog&quot;&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
 
 &lt;h2 id=&quot;参考文献&quot;&gt;参考文献&lt;/h2&gt;
 
@@ -281,8 +316,8 @@ link github_pages to github.io--&gt;&lt;g id=&apos;link_github_pages_github.io&a
 &lt;/ol&gt;
 </description>
         <pubDate>Tue, 13 Dec 2022 00:00:00 +0800</pubDate>
-        <link>http://localhost:4000/2022/12/13/Jekyll-Site/</link>
-        <guid isPermaLink="true">http://localhost:4000/2022/12/13/Jekyll-Site/</guid>
+        <link>http://jiangjianbo.github.io/2022/12/13/Jekyll-Site/</link>
+        <guid isPermaLink="true">http://jiangjianbo.github.io/2022/12/13/Jekyll-Site/</guid>
         
         <category>Jekyll</category>
         
@@ -399,8 +434,8 @@ link jpa_ref to id_ref--&gt;&lt;g id=&apos;link_jpa_ref_id_ref&apos;&gt;&lt;path
 
 </description>
         <pubDate>Fri, 04 Nov 2022 00:00:00 +0800</pubDate>
-        <link>http://localhost:4000/2022/11/04/DDD-Object-Reference/</link>
-        <guid isPermaLink="true">http://localhost:4000/2022/11/04/DDD-Object-Reference/</guid>
+        <link>http://jiangjianbo.github.io/2022/11/04/DDD-Object-Reference/</link>
+        <guid isPermaLink="true">http://jiangjianbo.github.io/2022/11/04/DDD-Object-Reference/</guid>
         
         <category>方法</category>
         
@@ -469,8 +504,8 @@ link jpa_ref to id_ref--&gt;&lt;g id=&apos;link_jpa_ref_id_ref&apos;&gt;&lt;path
 
 </description>
         <pubDate>Tue, 28 May 2019 00:00:00 +0800</pubDate>
-        <link>http://localhost:4000/2019/05/28/Model-For-Cash-Flow/</link>
-        <guid isPermaLink="true">http://localhost:4000/2019/05/28/Model-For-Cash-Flow/</guid>
+        <link>http://jiangjianbo.github.io/2019/05/28/Model-For-Cash-Flow/</link>
+        <guid isPermaLink="true">http://jiangjianbo.github.io/2019/05/28/Model-For-Cash-Flow/</guid>
         
         <category>方法</category>
         
@@ -524,8 +559,8 @@ link jpa_ref to id_ref--&gt;&lt;g id=&apos;link_jpa_ref_id_ref&apos;&gt;&lt;path
 &lt;p&gt;看起来很美！&lt;/p&gt;
 </description>
         <pubDate>Mon, 27 May 2019 00:00:00 +0800</pubDate>
-        <link>http://localhost:4000/2019/05/27/About-Universal-Framework/</link>
-        <guid isPermaLink="true">http://localhost:4000/2019/05/27/About-Universal-Framework/</guid>
+        <link>http://jiangjianbo.github.io/2019/05/27/About-Universal-Framework/</link>
+        <guid isPermaLink="true">http://jiangjianbo.github.io/2019/05/27/About-Universal-Framework/</guid>
         
         <category>架构</category>
         
@@ -620,8 +655,8 @@ link jpa_ref to id_ref--&gt;&lt;g id=&apos;link_jpa_ref_id_ref&apos;&gt;&lt;path
 &lt;p&gt;当然，正事是对这些数据进行探索，比如每个月的成单率变化规律，将这个规律总结出算法，再变成代码，实现出一个预测成单率的软件功能。&lt;/p&gt;
 </description>
         <pubDate>Wed, 22 May 2019 00:00:00 +0800</pubDate>
-        <link>http://localhost:4000/2019/05/22/Model-for-Enterprise/</link>
-        <guid isPermaLink="true">http://localhost:4000/2019/05/22/Model-for-Enterprise/</guid>
+        <link>http://jiangjianbo.github.io/2019/05/22/Model-for-Enterprise/</link>
+        <guid isPermaLink="true">http://jiangjianbo.github.io/2019/05/22/Model-for-Enterprise/</guid>
         
         <category>方法</category>
         
@@ -656,8 +691,8 @@ link jpa_ref to id_ref--&gt;&lt;g id=&apos;link_jpa_ref_id_ref&apos;&gt;&lt;path
 
 </description>
         <pubDate>Mon, 13 May 2019 00:00:00 +0800</pubDate>
-        <link>http://localhost:4000/2019/05/13/OO-Bionics/</link>
-        <guid isPermaLink="true">http://localhost:4000/2019/05/13/OO-Bionics/</guid>
+        <link>http://jiangjianbo.github.io/2019/05/13/OO-Bionics/</link>
+        <guid isPermaLink="true">http://jiangjianbo.github.io/2019/05/13/OO-Bionics/</guid>
         
         <category>思想</category>
         
@@ -687,8 +722,8 @@ link jpa_ref to id_ref--&gt;&lt;g id=&apos;link_jpa_ref_id_ref&apos;&gt;&lt;path
 
 </description>
         <pubDate>Tue, 30 Apr 2019 00:00:00 +0800</pubDate>
-        <link>http://localhost:4000/2019/04/30/Software-Enterprise-Tech-Sys/</link>
-        <guid isPermaLink="true">http://localhost:4000/2019/04/30/Software-Enterprise-Tech-Sys/</guid>
+        <link>http://jiangjianbo.github.io/2019/04/30/Software-Enterprise-Tech-Sys/</link>
+        <guid isPermaLink="true">http://jiangjianbo.github.io/2019/04/30/Software-Enterprise-Tech-Sys/</guid>
         
         <category>体系</category>
         
@@ -708,8 +743,8 @@ link jpa_ref to id_ref--&gt;&lt;g id=&apos;link_jpa_ref_id_ref&apos;&gt;&lt;path
 &lt;a href=&quot;https://www.zhihu.com/question/21621731&quot;&gt;为什么中国人均GDP在世界上的排名如此靠后&lt;/a&gt;&lt;/p&gt;
 </description>
         <pubDate>Tue, 30 Apr 2019 00:00:00 +0800</pubDate>
-        <link>http://localhost:4000/2019/04/30/About-Efficient/</link>
-        <guid isPermaLink="true">http://localhost:4000/2019/04/30/About-Efficient/</guid>
+        <link>http://jiangjianbo.github.io/2019/04/30/About-Efficient/</link>
+        <guid isPermaLink="true">http://jiangjianbo.github.io/2019/04/30/About-Efficient/</guid>
         
         <category>随想</category>
         
@@ -725,8 +760,8 @@ link jpa_ref to id_ref--&gt;&lt;g id=&apos;link_jpa_ref_id_ref&apos;&gt;&lt;path
 &lt;p&gt;第一篇文章&lt;/p&gt;
 </description>
         <pubDate>Sun, 31 Mar 2019 00:00:00 +0800</pubDate>
-        <link>http://localhost:4000/2019/03/31/Archetype-Preface/</link>
-        <guid isPermaLink="true">http://localhost:4000/2019/03/31/Archetype-Preface/</guid>
+        <link>http://jiangjianbo.github.io/2019/03/31/Archetype-Preface/</link>
+        <guid isPermaLink="true">http://jiangjianbo.github.io/2019/03/31/Archetype-Preface/</guid>
         
         <category>架构</category>
         
@@ -745,8 +780,8 @@ link jpa_ref to id_ref--&gt;&lt;g id=&apos;link_jpa_ref_id_ref&apos;&gt;&lt;path
 preface&lt;/p&gt;
 </description>
         <pubDate>Tue, 01 Jan 2019 00:00:00 +0800</pubDate>
-        <link>http://localhost:4000/2019/01/01/Hello/</link>
-        <guid isPermaLink="true">http://localhost:4000/2019/01/01/Hello/</guid>
+        <link>http://jiangjianbo.github.io/2019/01/01/Hello/</link>
+        <guid isPermaLink="true">http://jiangjianbo.github.io/2019/01/01/Hello/</guid>
         
         <category>实验</category>
         

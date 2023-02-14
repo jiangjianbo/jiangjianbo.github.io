@@ -42,7 +42,7 @@
     <link rel="shortcut icon" href="/img/favicon.ico">
 
     <!-- Canonical URL -->
-    <link rel="canonical" href="http://localhost:4000/2022/12/13/Jekyll-Site/">
+    <link rel="canonical" href="http://jiangjianbo.github.io/2022/12/13/Jekyll-Site/">
 
     <!-- Bootstrap Core CSS -->
     <link rel="stylesheet" href="/css/bootstrap.min.css">
@@ -395,12 +395,15 @@ jekyll-spaceship:
 <p>这里也要吐槽 <code class="language-plaintext highlighter-rouge">jekyll-spaceship</code>，上面这段原文里的 <code class="language-plaintext highlighter-rouge">@startuml</code> 这种标注直接给我解析成了它要识别的指令，加任何折衷都不行。
 这也是最终被我抛弃的原因之一。</p>
 
+<p>另外一个原因我不用这个插件是：所有生成的plantuml图片竟然是引用<a href="plantuml.com"></a>提供的免费图片生成的链接。
+我说你一个页面生成器，不是一次性生成个图片嵌入到网页里，每次访问去耗费人家plantuml的流量，是不是有问题啊？损人不利己啊！</p>
+
 <ol>
   <li>启动命令行，在git工程目录运行命令 <code class="language-plaintext highlighter-rouge">bundle install</code> 下载并安装插件。</li>
 </ol>
 
 <p>如果运行的时候出现类似错误 <code class="language-plaintext highlighter-rouge">Warning: the fonts "Times" and "Times" are not available for the Java logical font</code>，表示电脑中缺少字体。
-尤其是Mac电脑，请到 [https://www.freebestfonts.com/timr45w-font] 下载并安装字体。</p>
+尤其是Mac电脑，请到 <a href="https://www.freebestfonts.com/timr45w-font"></a> 下载并安装字体。</p>
 
 <h3 id="使用插件">使用插件</h3>
 
@@ -436,7 +439,7 @@ git push origin gh-pages
 <p>Github Pages默认假设 <code class="language-plaintext highlighter-rouge">gh-pages</code> 分支中存放的是 jekyll 格式的源码，会自动构建之。为了阻止自动构建，需要在 <code class="language-plaintext highlighter-rouge">gh-pages</code> 分支的根目录中
 存放一个 <code class="language-plaintext highlighter-rouge">.nojekyll</code> 文件。</p>
 
-<p>为了确保工作的自动化，我在磁盘上放置了两个文件夹，一个是 <code class="language-plaintext highlighter-rouge">blog-master</code> 存放源代码，并和 <code class="language-plaintext highlighter-rouge">master</code>分支关联，一个是 <code class="language-plaintext highlighter-rouge">blog-site</code> 用来存放输出的静态网页，
+<p>为了确保工作的自动化，我在磁盘上放置了两个文件夹，一个是 <code class="language-plaintext highlighter-rouge">blog-master</code> 存放源代码，并和 <code class="language-plaintext highlighter-rouge">master</code>分支关联，一个是 <code class="language-plaintext highlighter-rouge">gh-pages</code> 用来存放输出的静态网页，
 并和 <code class="language-plaintext highlighter-rouge">gh-pages</code> 分支关联。这样两个可以互不干扰。</p>
 
 <div class="plantuml"><svg contentStyleType='text/css' height='234px' preserveAspectRatio='none' style='width:760px;height:234px;background:#FFFFFF;' version='1.1' viewBox='0 0 760 234' width='760px' xmlns:xlink='http://www.w3.org/1999/xlink' xmlns='http://www.w3.org/2000/svg' zoomAndPan='magnify'><defs/><g><!--MD5=[9ac95a62b6bea9fd5cbb09176a2aa23f]
@@ -458,9 +461,19 @@ link blog_master to master--><g id='link_blog_master_master'><path d='M282.02,16
 link blog_site to gh_pages--><g id='link_blog_site_gh_pages'><path d='M270.74,75.73 C312.36,76.43 374.8,77.48 417.7,78.2 ' fill='none' id='blog_site-to-gh_pages' style='stroke:#181818;stroke-width:1.0;stroke-dasharray:7.0,7.0;'/><polygon fill='#181818' points='422.84,78.28,413.9099,74.1263,417.8407,78.1943,413.7728,82.1251,422.84,78.28' style='stroke:#181818;stroke-width:1.0;'/><text fill='#000000' font-family='sans-serif' font-size='13' lengthAdjust='spacing' textLength='77' x='313' y='73.5684'>[git commit]</text></g><!--MD5=[686cccd021a9542b9e8d2359c9c14b67]
 link gh_pages to github_pages--><g id='link_gh_pages_github_pages'><path d='M510.21,79 C541.69,79 585.06,79 620.72,79 ' fill='none' id='gh_pages-to-github_pages' style='stroke:#181818;stroke-width:1.0;'/><polygon fill='#181818' points='625.93,79,616.93,75,620.93,79,616.93,83,625.93,79' style='stroke:#181818;stroke-width:1.0;'/><text fill='#000000' font-family='sans-serif' font-size='13' lengthAdjust='spacing' textLength='52' x='543' y='75.5684'>定期更新</text></g><!--MD5=[4a3b4780863dc8f89d336825ecaebd63]
 link github_pages to github.io--><g id='link_github_pages_github.io'><path d='M686,102.06 C686,115.94 686,133.73 686,148.49 ' fill='none' id='github_pages-to-github.io' style='stroke:#181818;stroke-width:1.0;'/><polygon fill='#181818' points='686,153.78,690,144.78,686,148.78,682,144.78,686,153.78' style='stroke:#181818;stroke-width:1.0;'/><text fill='#000000' font-family='sans-serif' font-size='13' lengthAdjust='spacing' textLength='26' x='661.5' y='133.0684'>推送</text></g></g></svg></div>
+<p>简而言之，就是github里用两个分支，对应磁盘上两个不同的目录，一个目录<code class="language-plaintext highlighter-rouge">blog-master</code>放博客源代码，一个目录<code class="language-plaintext highlighter-rouge">gh-pages</code>放生成的页面。各自独立提交就ok了。</p>
+
+<h3 id="创建新文章">创建新文章</h3>
+
+<p>初学者对创建新文章的格式会把握不好，所以可以用命令行增加新文章。</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+</pre></td><td class="rouge-code"><pre>rake post <span class="nv">title</span><span class="o">=</span><span class="s2">"My first blog"</span><span class="sb">`</span>
+</pre></td></tr></tbody></table></code></pre></div></div>
+
 <h3 id="自动复制">自动复制</h3>
 
-<p>jekyll 使用指令 <code class="language-plaintext highlighter-rouge">bundle exec jekyll build</code> 或 <code class="language-plaintext highlighter-rouge">bundle exec jekyll serve</code> 处理页面代码之后的静态内容全部都放在 <code class="language-plaintext highlighter-rouge">_site</code> 目录下，需要手工复制到 <code class="language-plaintext highlighter-rouge">blog-site</code> 目录，所以我们需要自动化脚本来处理这些事情。</p>
+<p>jekyll 使用指令 <code class="language-plaintext highlighter-rouge">bundle exec jekyll build</code> 或 <code class="language-plaintext highlighter-rouge">bundle exec jekyll serve</code> 处理页面代码之后的静态内容全部都放在 <code class="language-plaintext highlighter-rouge">_site</code> 目录下，需要手工复制到 <code class="language-plaintext highlighter-rouge">gh-pages</code> 目录，所以我们需要自动化脚本来处理这些事情。</p>
 
 <p>编辑根目录下的 <code class="language-plaintext highlighter-rouge">Rakefile</code> 在尾部增加：</p>
 
@@ -475,9 +488,18 @@ link github_pages to github.io--><g id='link_github_pages_github.io'><path d='M6
 9
 10
 11
+12
+13
+14
+15
+16
+17
+18
+19
+20
 </pre></td><td class="rouge-code"><pre><span class="c1"># copy from https://www.sitepoint.com/jekyll-plugins-github/</span>
 <span class="c1"># </span>
-<span class="no">GH_PAGES_DIR</span> <span class="o">=</span> <span class="s2">"blog-site"</span>
+<span class="no">GH_PAGES_DIR</span> <span class="o">=</span> <span class="s2">"gh-pages"</span>
 
 <span class="n">desc</span> <span class="s2">"Build Jekyll site and copy files"</span>
 <span class="n">task</span> <span class="ss">:build</span> <span class="k">do</span>
@@ -485,6 +507,15 @@ link github_pages to github.io--><g id='link_github_pages_github.io'><path d='M6
   <span class="nb">system</span> <span class="s2">"rm -r ../</span><span class="si">#{</span><span class="no">GH_PAGES_DIR</span><span class="si">}</span><span class="s2">/*"</span> <span class="k">unless</span> <span class="no">Dir</span><span class="p">[</span><span class="s1">'../#{GH_PAGES_DIR}/*'</span><span class="p">].</span><span class="nf">empty?</span>
   <span class="nb">system</span> <span class="s2">"cp -r _site/* ../</span><span class="si">#{</span><span class="no">GH_PAGES_DIR</span><span class="si">}</span><span class="s2">/"</span>
   <span class="nb">system</span> <span class="s2">"echo nojekyll &gt; ../</span><span class="si">#{</span><span class="no">GH_PAGES_DIR</span><span class="si">}</span><span class="s2">/.nojekyll"</span>
+<span class="k">end</span>
+
+<span class="n">desc</span> <span class="s2">"commit Jekyll site and push to github repository"</span>
+<span class="n">task</span> <span class="ss">:publish</span> <span class="k">do</span>
+  <span class="n">title</span> <span class="o">=</span> <span class="no">ENV</span><span class="p">[</span><span class="s1">'TITLE'</span><span class="p">]</span> <span class="o">||</span> <span class="s2">"at </span><span class="si">#{</span><span class="no">Date</span><span class="p">.</span><span class="nf">today</span><span class="si">}</span><span class="s2">"</span>
+
+  <span class="nb">system</span> <span class="s2">"cd ../</span><span class="si">#{</span><span class="no">GH_PAGES_DIR</span><span class="si">}</span><span class="s2">"</span>
+  <span class="nb">system</span> <span class="s2">"git commit -m </span><span class="se">\"</span><span class="s2">publish </span><span class="si">#{</span><span class="n">title</span><span class="si">}</span><span class="se">\"</span><span class="s2">"</span>
+  <span class="nb">system</span> <span class="s2">"git push origin gh-pages"</span>
 <span class="k">end</span>
 </pre></td></tr></tbody></table></code></pre></div></div>
 
@@ -514,9 +545,12 @@ link github_pages to github.io--><g id='link_github_pages_github.io'><path d='M6
   <span class="pi">]</span>
 </pre></td></tr></tbody></table></code></pre></div></div>
 
+<p>等你的文章写完了，就到命令行，运行 <code class="language-plaintext highlighter-rouge">rake build</code> 命令。如果预览觉得可以，就运行 <code class="language-plaintext highlighter-rouge">rake publish title="加了文章"</code> 提交到 github。
+记得别忘记源代码也手动去提交，脚本不管源代码的自动提交。</p>
+
 <h3 id="网站预览">网站预览</h3>
 
-<p>静态内容在 <code class="language-plaintext highlighter-rouge">blog-site</code> 目录下，并没有任何支持浏览器访问浏览的功能。为了把这个目录中的内容可网络访问，可以在 <code class="language-plaintext highlighter-rouge">blog-site</code> 目录下启动命令行运行</p>
+<p>静态内容在 <code class="language-plaintext highlighter-rouge">gh-pages</code> 目录下，并没有任何支持浏览器访问浏览的功能。为了把这个目录中的内容可网络访问，可以在 <code class="language-plaintext highlighter-rouge">gh-pages</code> 目录下启动命令行运行</p>
 
 <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
 </pre></td><td class="rouge-code"><pre>python3 <span class="nt">-m</span> http.server
@@ -526,9 +560,10 @@ link github_pages to github.io--><g id='link_github_pages_github.io'><path d='M6
 
 <h2 id="自动化辅助功能">自动化辅助功能</h2>
 
-<p>rake post title=”My first blog”</p>
-
-<p>rake build</p>
+<ul>
+  <li>自动更新 <code class="language-plaintext highlighter-rouge">gh-pages</code> 目录： <code class="language-plaintext highlighter-rouge">rake build</code></li>
+  <li>自动提交 <code class="language-plaintext highlighter-rouge">gh-pages</code> 目录到github中： <code class="language-plaintext highlighter-rouge">rake publish title="add article MyFirstBlog"</code></li>
+</ul>
 
 <h2 id="参考文献">参考文献</h2>
 
