@@ -1,0 +1,958 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <meta name="description" content="一个老鸟的自白">
+    <meta name="keywords" content="BigTall, BigTall Blog, 老翅寒暑, archetype, software design, OOA, OOD">
+    <meta name="theme-color" content="#000000">
+
+    <!-- Open Graph -->
+    <meta property="og:title"
+        content="为Jekyll静态网站添加PlantUML插件 - 老翅寒暑 | BigTall Blog">
+    
+    <meta property="og:type" content="article">
+    <meta property="og:description" content="前言
+">
+    
+    <meta property="article:published_time" content=" 2022-12-13T00:00:00Z">
+    
+    
+    <meta property="article:author" content="BigTall">
+    
+    
+    <meta property="article:tag" content="Jekyll">
+    
+    <meta property="article:tag" content="网站">
+    
+    
+    <meta property="og:image" content="/img/about-bigtall-gentle.jpg">
+    <meta property="og:url" content="/2022/12/13/Jekyll-Site/">
+    <meta property="og:site_name" content="老翅寒暑 | BigTall Blog">
+
+    <title>为Jekyll静态网站添加PlantUML插件 - 老翅寒暑 | BigTall Blog</title>
+
+    <!-- Web App Manifest -->
+    <link rel="manifest" href="/pwa/manifest.json">
+
+    <!-- Favicon -->
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <!-- Canonical URL -->
+    <link rel="canonical" href="http://localhost:4000/2022/12/13/Jekyll-Site/">
+
+    <!-- Bootstrap Core CSS -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/hux-blog.min.css">
+
+    <!-- Custom Fonts -->
+    <!-- <link href="http://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
+    <!-- Hux change font-awesome CDN to qiniu -->
+    <link href="/css/font-awesome.min.css" rel="stylesheet"
+        type="text/css">
+
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- ga & ba script hoook -->
+    <script></script>
+
+
+</head>
+
+
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
+
+    <!-- Navigation -->
+
+    <nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+        
+        <div class="container-fluid">
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header page-scroll">
+                <button type="button" class="navbar-toggle">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="/">老翅寒暑</a>
+            </div>
+
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div id="huxblog_navbar">
+                <div class="navbar-collapse">
+                    <ul class="nav navbar-nav navbar-right">
+                        <li>
+                            <a href="/">Home</a>
+                        </li>
+                        
+                        
+                        
+                        
+                        <li>
+                            <a href="/about/">About</a>
+                        </li>
+                        
+                        
+                        
+                        <li>
+                            <a href="/archive/">Archive</a>
+                        </li>
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        <li>
+                            <a href="/tags/">Tags</a>
+                        </li>
+                        
+                        
+                        <li class="search-icon">
+                            <a href="javascript:void(0)">
+                                <i class="fa fa-search"></i>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <!-- /.navbar-collapse -->
+        </div>
+        <!-- /.container -->
+    </nav>
+
+    <script>
+        // Drop Bootstarp low-performance Navbar
+        // Use customize navbar with high-quality material design animation
+        // in high-perf jank-free CSS3 implementation
+        var $body = document.body;
+        var $toggle = document.querySelector('.navbar-toggle');
+        var $navbar = document.querySelector('#huxblog_navbar');
+        var $collapse = document.querySelector('.navbar-collapse');
+
+        var __HuxNav__ = {
+            close: function () {
+                $navbar.className = " ";
+                // wait until animation end.
+                setTimeout(function () {
+                    // prevent frequently toggle
+                    if ($navbar.className.indexOf('in') < 0) {
+                        $collapse.style.height = "0px"
+                    }
+                }, 400)
+            },
+            open: function () {
+                $collapse.style.height = "auto"
+                $navbar.className += " in";
+            }
+        }
+
+        // Bind Event
+        $toggle.addEventListener('click', function (e) {
+            if ($navbar.className.indexOf('in') > 0) {
+                __HuxNav__.close()
+            } else {
+                __HuxNav__.open()
+            }
+        })
+
+        /**
+         * Since Fastclick is used to delegate 'touchstart' globally
+         * to hack 300ms delay in iOS by performing a fake 'click',
+         * Using 'e.stopPropagation' to stop 'touchstart' event from 
+         * $toggle/$collapse will break global delegation.
+         * 
+         * Instead, we use a 'e.target' filter to prevent handler
+         * added to document close HuxNav.  
+         *
+         * Also, we use 'click' instead of 'touchstart' as compromise
+         */
+        document.addEventListener('click', function (e) {
+            if (e.target == $toggle) return;
+            if (e.target.className == 'icon-bar') return;
+            __HuxNav__.close();
+        })
+    </script>
+    <!-- Search -->
+<div class="search-page">
+  <div class="search-icon-close-container">
+    <span class="search-icon-close">
+      <i class="fa fa-chevron-down"></i>
+    </span>
+  </div>
+  <div class="search-main container">
+    <div class="row">
+      <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+        <form></form>
+        <input type="text" id="search-input" placeholder="$ grep...">
+        </form>
+        <div id="search-results" class="mini-post-list"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    <!-- Image to hack wechat -->
+<!-- <img src="/img/icon_wechat.png" width="0" height="0"> -->
+<!-- <img src="/img/post-bg-sunset.jpg" width="0" height="0"> -->
+
+<!-- Post Header -->
+
+
+
+<style type="text/css">
+    header.intro-header{
+        position: relative;
+        background-image: url('/img/post-bg-sunset.jpg');
+        background: ;
+    }
+
+    
+</style>
+
+
+
+
+<header class="intro-header" >
+
+    <div class="header-mask"></div>
+    
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <div class="tags">
+                        
+                        <a class="tag" href="/archive/?tag=Jekyll" title="Jekyll">Jekyll</a>
+                        
+                        <a class="tag" href="/archive/?tag=%E7%BD%91%E7%AB%99" title="网站">网站</a>
+                        
+                    </div>
+                    <h1>为Jekyll静态网站添加PlantUML插件</h1>
+                    
+                    <h2 class="subheading">不用Pages自动生成</h2>
+                    <span class="meta">Posted by BigTall on December 13, 2022</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+
+
+
+
+
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+    <!-- Post Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                <!-- Multi-Lingual -->
+                
+
+				<h2 id="前言">前言</h2>
+
+<p>突然想起来要好好整理一下自己的博客空间，已经荒废很多年，如果再不捡起来，等到自己知识老化的时候再去写东西就没人看了。</p>
+
+<p>使用Github Pages + Jekyll把博客发布为静态网站，给人感觉比较私密，似乎所有的控制权都抓在自己手里的样子。
+但是作为一个技术博客，如果写东西没有<a href="http://plantuml.com">PlantUML</a>的加持，当然效率就会差很多。</p>
+
+<p>本文内容记录了断断续续将近一周的折腾。</p>
+
+<h2 id="plantuml-插件"><code class="language-plaintext highlighter-rouge">PlantUML</code> 插件</h2>
+
+<p>目前支持 <code class="language-plaintext highlighter-rouge">PlantUML</code> 的插件我找到了好几个，但是最终使用的是 <code class="language-plaintext highlighter-rouge">kramdown-plantuml</code>，另外一个 <code class="language-plaintext highlighter-rouge">jekyll-spaceship</code> 插件支持更多的功能，
+如果需要安装的话，只需要装任意一个就可以支持 <code class="language-plaintext highlighter-rouge">PlantUML</code> 了，不需要两个都装。
+但是从我的实践来看，<code class="language-plaintext highlighter-rouge">jekyll-spaceship</code> 插件生成 <code class="language-plaintext highlighter-rouge">PlantUML</code> 图形会直接生成引用 plantuml.com 的生成功能，我觉得还是不可接受的。
+人家是免费提供给你使用，作为一个静态网站，你一遍遍让人家帮你生成图形干嘛？不地道！所以我推荐 <code class="language-plaintext highlighter-rouge">kramdown-plantuml</code>，没那么多功能，但是规矩。</p>
+
+<h3 id="安装">安装</h3>
+
+<p>安装两个插件的功能的方法如下，各位看官可以择一个安装：</p>
+
+<ol>
+  <li>修改根目录下的 <code class="language-plaintext highlighter-rouge">Gemfile</code>，找到<code class="language-plaintext highlighter-rouge">group :jekyll_plugins do</code>位置，在其中加入所需的两个插件：</li>
+</ol>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+</pre></td><td class="rouge-code"><pre><span class="n">gem</span> <span class="s1">'kramdown-plantuml'</span>
+
+<span class="n">group</span> <span class="ss">:jekyll_plugins</span> <span class="k">do</span>
+  <span class="n">gem</span> <span class="s2">"jekyll-feed"</span><span class="p">,</span> <span class="s2">"~&gt; 0.12"</span>
+  <span class="n">gem</span> <span class="s1">'jekyll-spaceship'</span>
+<span class="k">end</span>
+</pre></td></tr></tbody></table></code></pre></div></div>
+<ol>
+  <li>在 <code class="language-plaintext highlighter-rouge">_config.yml</code> 中找到 <code class="language-plaintext highlighter-rouge">plugins:</code> 位置，并加入两个插件</li>
+</ol>
+
+<div class="language-yml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+</pre></td><td class="rouge-code"><pre><span class="na">plugins</span><span class="pi">:</span>
+  <span class="pi">-</span> <span class="s2">"</span><span class="s">jekyll-paginate"</span>
+  <span class="pi">-</span> <span class="s2">"</span><span class="s">kramdown-plantuml"</span>
+  <span class="pi">-</span> <span class="s2">"</span><span class="s">jekyll-spaceship"</span>
+</pre></td></tr></tbody></table></code></pre></div></div>
+<ol>
+  <li>继续在 <code class="language-plaintext highlighter-rouge">_config.yml</code> 中加入两个插件的配置项</li>
+</ol>
+<pre>
+jekyll-spaceship:
+  # default enabled processors
+  processors:
+    - table-processor
+    - mathjax-processor
+    - plantuml-processor
+    - mermaid-processor
+    - polyfill-processor
+    - media-processor
+    - emoji-processor
+    - element-processor
+  mathjax-processor:
+    src:
+      - https://polyfill.io/v3/polyfill.min.js?features=es6
+      - https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js
+    config:
+      tex:
+        inlineMath:
+          - ['$','$']
+          - ['\(','\)']
+        displayMath:
+          - ['$$','$$']
+          - ['\[','\]']
+      svg:
+        fontCache: 'global'
+    optimize: # optimization on building stage to check and add mathjax scripts
+      enabled: true # value `false` for adding to all pages
+      include: []   # include patterns for math expressions checking (regexp)
+      exclude: []   # exclude patterns for math expressions checking (regexp)
+  plantuml-processor:
+    mode: default  # mode value 'pre-fetch' for fetching image at building stage
+    css:
+      class: plantuml
+    syntax:
+      code: 'plantuml!'
+      custom: ['@startuml', '@enduml']
+    src: http://www.plantuml.com/plantuml/svg/
+  mermaid-processor:
+    mode: default  # mode value 'pre-fetch' for fetching image at building stage
+    css:
+      class: mermaid
+    syntax:
+      code: 'mermaid!'
+      custom: ['@startmermaid', '@endmermaid']
+    config:
+      theme: default
+    src: https://mermaid.ink/svg/
+  media-processor:
+    default:
+      id: 'media-{id}'
+      class: 'media'
+      width: '100%'
+      height: 350
+      frameborder: 0
+      style: 'max-width: 600px; outline: none;'
+      allow: 'encrypted-media; picture-in-picture'
+  emoji-processor:
+    css:
+      class: emoji
+    src: https://github.githubassets.com/images/icons/emoji/
+</pre>
+
+<p>这里也要吐槽 <code class="language-plaintext highlighter-rouge">jekyll-spaceship</code>，上面这段原文里的 <code class="language-plaintext highlighter-rouge">@startuml</code> 这种标注直接给我解析成了它要识别的指令，加任何折衷都不行。
+这也是最终被我抛弃的原因之一。</p>
+
+<ol>
+  <li>启动命令行，在git工程目录运行命令 <code class="language-plaintext highlighter-rouge">bundle install</code> 下载并安装插件。</li>
+</ol>
+
+<p>如果运行的时候出现类似错误 <code class="language-plaintext highlighter-rouge">Warning: the fonts "Times" and "Times" are not available for the Java logical font</code>，表示电脑中缺少字体。
+尤其是Mac电脑，请到 [https://www.freebestfonts.com/timr45w-font] 下载并安装字体。</p>
+
+<h3 id="使用插件">使用插件</h3>
+
+<p>在 markdown 中使用 <code class="language-plaintext highlighter-rouge">PlantUML</code> 插件的方法也很简单，使用如下源代码形式即可：</p>
+
+<div class="language-markdown highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+</pre></td><td class="rouge-code"><pre><span class="p">```</span><span class="nl">plantuml
+</span><span class="sb">a --&gt; b</span>
+<span class="p">```</span>
+</pre></td></tr></tbody></table></code></pre></div></div>
+
+<p>要注意，使用 <code class="language-plaintext highlighter-rouge">jekyll-spaceship</code> 插件的时候，默认的代码块名称加了一个<code class="language-plaintext highlighter-rouge">!</code> ，需要手工把上面配置项 <code class="language-plaintext highlighter-rouge">code: 'plantuml!'</code> 去掉感叹号。</p>
+
+<h2 id="静态网站生成">静态网站生成</h2>
+
+<h3 id="静态网站方案">静态网站方案</h3>
+
+<p>静态网站的最终方案是使用分支进行区分，<code class="language-plaintext highlighter-rouge">master</code> 分支存放博客的源代码， <code class="language-plaintext highlighter-rouge">gh-pages</code> 分支存放生成的 <code class="language-plaintext highlighter-rouge">_site</code> 目录中的内容。
+如果尚未创建 <code class="language-plaintext highlighter-rouge">gh-pages</code> 分支，可以用如下的方法创建：</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+</pre></td><td class="rouge-code"><pre>git checkout <span class="nt">--orphan</span> gh-pages
+git <span class="nb">rm</span> <span class="nt">-rf</span> <span class="nb">.</span>
+git commit <span class="nt">--allow-empty</span> <span class="nt">-m</span> <span class="s2">"initial commit"</span>
+git push origin gh-pages
+</pre></td></tr></tbody></table></code></pre></div></div>
+
+<p>Github Pages默认假设 <code class="language-plaintext highlighter-rouge">gh-pages</code> 分支中存放的是 jekyll 格式的源码，会自动构建之。为了阻止自动构建，需要在 <code class="language-plaintext highlighter-rouge">gh-pages</code> 分支的根目录中
+存放一个 <code class="language-plaintext highlighter-rouge">.nojekyll</code> 文件。</p>
+
+<p>为了确保工作的自动化，我在磁盘上放置了两个文件夹，一个是 <code class="language-plaintext highlighter-rouge">blog-master</code> 存放源代码，并和 <code class="language-plaintext highlighter-rouge">master</code>分支关联，一个是 <code class="language-plaintext highlighter-rouge">blog-site</code> 用来存放输出的静态网页，
+并和 <code class="language-plaintext highlighter-rouge">gh-pages</code> 分支关联。这样两个可以互不干扰。</p>
+
+<div class="plantuml"><svg contentStyleType='text/css' height='234px' preserveAspectRatio='none' style='width:760px;height:234px;background:#FFFFFF;' version='1.1' viewBox='0 0 760 234' width='760px' xmlns:xlink='http://www.w3.org/1999/xlink' xmlns='http://www.w3.org/2000/svg' zoomAndPan='magnify'><defs/><g><!--MD5=[9ac95a62b6bea9fd5cbb09176a2aa23f]
+cluster git--><g id='cluster_git'><path d='M407,16 C407,6 466.5,6 466.5,6 C466.5,6 526,6 526,16 L526,188 C526,198 466.5,198 466.5,198 C466.5,198 407,198 407,188 L407,16 ' style='stroke:#181818;stroke-width:1.0;fill:none;'/><path d='M407,16 C407,26 466.5,26 466.5,26 C466.5,26 526,26 526,16 ' fill='none' style='stroke:#181818;stroke-width:1.0;'/><text fill='#000000' font-family='sans-serif' font-size='14' font-weight='bold' lengthAdjust='spacing' textLength='99' x='417' y='41.5352'>git repository</text></g><!--MD5=[e6001af16d4774e0fdad2715570119d9]
+entity master--><g id='elem_master'><path d='M433,146.5 C433,136.5 466.5,136.5 466.5,136.5 C466.5,136.5 500,136.5 500,146.5 L500,171.9883 C500,181.9883 466.5,181.9883 466.5,181.9883 C466.5,181.9883 433,181.9883 433,171.9883 L433,146.5 ' fill='#F1F1F1' style='stroke:#181818;stroke-width:0.5;'/><path d='M433,146.5 C433,156.5 466.5,156.5 466.5,156.5 C466.5,156.5 500,156.5 500,146.5 ' fill='none' style='stroke:#181818;stroke-width:0.5;'/><text fill='#000000' font-family='sans-serif' font-size='14' lengthAdjust='spacing' textLength='47' x='443' y='174.0352'>master</text></g><!--MD5=[5cd6aaa05ebeecbba562f30ecb3308f8]
+entity gh_pages--><g id='elem_gh_pages'><path d='M423,66.5 C423,56.5 466.5,56.5 466.5,56.5 C466.5,56.5 510,56.5 510,66.5 L510,91.9883 C510,101.9883 466.5,101.9883 466.5,101.9883 C466.5,101.9883 423,101.9883 423,91.9883 L423,66.5 ' fill='#F1F1F1' style='stroke:#181818;stroke-width:0.5;'/><path d='M423,66.5 C423,76.5 466.5,76.5 466.5,76.5 C466.5,76.5 510,76.5 510,66.5 ' fill='none' style='stroke:#181818;stroke-width:0.5;'/><text fill='#000000' font-family='sans-serif' font-size='14' lengthAdjust='spacing' textLength='67' x='433' y='94.0352'>gh-pages</text></g><!--MD5=[c1d5a390b9757fd61b8ee8eb555675b4]
+entity 作者--><g id='elem_作者'><ellipse cx='42' cy='160.5' fill='#F1F1F1' rx='8' ry='8' style='stroke:#181818;stroke-width:0.5;'/><path d='M42,168.5 L42,195.5 M29,176.5 L55,176.5 M42,195.5 L29,210.5 M42,195.5 L55,210.5 ' fill='none' style='stroke:#181818;stroke-width:0.5;'/><text fill='#000000' font-family='sans-serif' font-size='14' lengthAdjust='spacing' textLength='28' x='28' y='225.5352'>作者</text></g><g id='elem_jekyll'><ellipse cx='42.234' cy='102.159' fill='#F1F1F1' rx='36.234' ry='14.659' style='stroke:#181818;stroke-width:0.5;'/><text fill='#000000' font-family='sans-serif' font-size='14' lengthAdjust='spacing' textLength='35' x='24.734' y='105.45'>jekyll</text></g><!--MD5=[91ab1b7d1290b8e7162eddc2c1493dd7]
+entity blog_site--><g id='elem_blog_site'><path d='M184,48 L225,48 A3.75,3.75 0 0 1 227.5,50.5 L234.5,69 L268,69 A2.5,2.5 0 0 1 270.5,71.5 L270.5,99.9883 A2.5,2.5 0 0 1 268,102.4883 L184,102.4883 A2.5,2.5 0 0 1 181.5,99.9883 L181.5,50.5 A2.5,2.5 0 0 1 184,48 ' fill='#F1F1F1' style='stroke:#181818;stroke-width:0.5;'/><line style='stroke:#181818;stroke-width:0.5;' x1='181.5' x2='234.5' y1='69' y2='69'/><text fill='#000000' font-family='sans-serif' font-size='14' lengthAdjust='spacing' textLength='59' x='191.5' y='89.5352'>blog site</text></g><!--MD5=[15a5cd90a353fe7b680cfd4fdfa80ed7]
+entity blog_master--><g id='elem_blog_master'><path d='M172.5,137 L213.5,137 A3.75,3.75 0 0 1 216,139.5 L223,158 L279.5,158 A2.5,2.5 0 0 1 282,160.5 L282,188.9883 A2.5,2.5 0 0 1 279.5,191.4883 L172.5,191.4883 A2.5,2.5 0 0 1 170,188.9883 L170,139.5 A2.5,2.5 0 0 1 172.5,137 ' fill='#F1F1F1' style='stroke:#181818;stroke-width:0.5;'/><line style='stroke:#181818;stroke-width:0.5;' x1='170' x2='223' y1='158' y2='158'/><text fill='#000000' font-family='sans-serif' font-size='14' lengthAdjust='spacing' textLength='82' x='180' y='178.5352'>blog master</text></g><!--MD5=[f705a08ecf238aa2dfc358ca50cd4858]
+entity github_pages--><g id='elem_github_pages'><path d='M635.6267,64.7935 C639.6169,57.6661 644.224,57.2364 648.7997,64.248 C651.8235,59.2502 656.7254,58.017 660.032,63.9576 C664.4047,57.3944 669.5871,56.6224 674.0802,63.8348 C676.489,55.6902 683.2846,56.0077 687.9759,61.5108 C693.3071,54.9167 697.4315,55.4518 701.0079,63.1149 C704.7075,58.0926 708.947,58.7315 712.2199,63.5986 C716.699,57.2764 721.3274,56.3304 725.9629,63.4385 C731.3891,57.2196 735.8543,58.9931 739.7586,65.1368 C747.7927,65.3344 752.4573,72.0146 748.3515,79.4833 C753.4538,87.5621 748.5961,95.0337 739.6906,95.5714 C735.9332,102.9019 729.2577,102.5264 725.5287,95.5434 C721.7728,101.8138 716.9095,101.7452 712.2654,96.5731 C709.5676,101.8439 704.543,103.2126 700.4531,98.167 C697.0299,104.7155 691.4205,104.5986 687.7316,98.4329 C683.3984,103.986 677.1778,103.0074 673.9375,97.1156 C669.0921,103.3304 664.8518,102.766 660.6976,96.3889 C656.8966,101.6935 651.4871,102.3999 648.4698,95.5974 C644.8595,102.1474 638.5588,101.2517 635.6528,94.8978 C628.0757,92.246 627.0802,86.536 631.6766,80.5181 C624.3678,73.9897 627.1698,67.3615 635.6267,64.7935 ' fill='#F1F1F1' style='stroke:#181818;stroke-width:0.5;'/><text fill='#000000' font-family='sans-serif' font-size='14' lengthAdjust='spacing' textLength='90' x='641' y='84.5352'>github pages</text></g><!--MD5=[a6d0825db5208be94af28d75ad328ecf]
+entity github.io--><g id='elem_github.io'><rect fill='#F1F1F1' height='46.4883' rx='2.5' ry='2.5' style='stroke:#181818;stroke-width:0.5;' width='102' x='635' y='154'/><rect fill='#F1F1F1' height='10' style='stroke:#181818;stroke-width:0.5;' width='15' x='717' y='159'/><rect fill='#F1F1F1' height='2' style='stroke:#181818;stroke-width:0.5;' width='4' x='715' y='161'/><rect fill='#F1F1F1' height='2' style='stroke:#181818;stroke-width:0.5;' width='4' x='715' y='165'/><text fill='#000000' font-family='sans-serif' font-size='14' lengthAdjust='spacing' textLength='62' x='650' y='187.5352'>github.io</text></g><!--MD5=[9e2e81c078931318e52f4c2704063a0c]
+link gh_pages to master--><!--MD5=[1a5bd110f6c7bfd88b67a495e17b7043]
+link blog_site to blog_master--><!--MD5=[47fb9ab4e6289732f0e5b2d25a812008]
+link jekyll to 作者--><!--MD5=[dcd9197351926e76b53d99d7e735a103]
+link 作者 to blog_master--><g id='link_作者_blog_master'><path d='M56.09,188.13 C78.55,184.92 125.78,178.17 164.6,172.63 ' fill='none' id='作者-to-blog_master' style='stroke:#181818;stroke-width:1.0;'/><polygon fill='#181818' points='169.78,171.89,160.3091,169.1877,164.8291,172.5891,161.4277,177.1091,169.78,171.89' style='stroke:#181818;stroke-width:1.0;'/></g><!--MD5=[6a5db68f545ebcb4940b655469ce52b0]
+reverse link jekyll to blog_master--><g id='link_jekyll_blog_master'><path d='M74.99,112.9 C101.13,121.8 138.68,134.59 169.68,145.15 ' fill='none' id='jekyll-backto-blog_master' style='stroke:#181818;stroke-width:1.0;'/><polygon fill='#181818' points='70.25,111.28,77.4931,117.9536,74.9862,112.8826,80.0573,110.3757,70.25,111.28' style='stroke:#181818;stroke-width:1.0;'/><text fill='#000000' font-family='sans-serif' font-size='13' lengthAdjust='spacing' textLength='26' x='111' y='122.5684'>处理</text></g><!--MD5=[39846f17d70c1aef01155fc1d53d06ac]
+link jekyll to blog_site--><g id='link_jekyll_blog_site'><path d='M75.96,97.11 C103.96,92.96 144.55,86.93 176.3,82.22 ' fill='none' id='jekyll-to-blog_site' style='stroke:#181818;stroke-width:1.0;'/><polygon fill='#181818' points='181.32,81.48,171.8329,78.8352,176.3734,82.2091,172.9995,86.7497,181.32,81.48' style='stroke:#181818;stroke-width:1.0;'/><text fill='#000000' font-family='sans-serif' font-size='13' lengthAdjust='spacing' textLength='30' x='109' y='84.5684'>copy</text></g><!--MD5=[dac82639a496755676da09a6ed07c2b6]
+link blog_master to master--><g id='link_blog_master_master'><path d='M282.02,162.85 C326.65,161.91 388.39,160.62 427.64,159.79 ' fill='none' id='blog_master-to-master' style='stroke:#181818;stroke-width:1.0;stroke-dasharray:7.0,7.0;'/><polygon fill='#181818' points='432.78,159.69,423.7018,155.8708,427.781,159.79,423.8618,163.8692,432.78,159.69' style='stroke:#181818;stroke-width:1.0;'/><text fill='#000000' font-family='sans-serif' font-size='13' lengthAdjust='spacing' textLength='77' x='313' y='156.5684'>[git commit]</text></g><!--MD5=[1ba344e1f51319b27c886a126e3a6f97]
+link blog_site to gh_pages--><g id='link_blog_site_gh_pages'><path d='M270.74,75.73 C312.36,76.43 374.8,77.48 417.7,78.2 ' fill='none' id='blog_site-to-gh_pages' style='stroke:#181818;stroke-width:1.0;stroke-dasharray:7.0,7.0;'/><polygon fill='#181818' points='422.84,78.28,413.9099,74.1263,417.8407,78.1943,413.7728,82.1251,422.84,78.28' style='stroke:#181818;stroke-width:1.0;'/><text fill='#000000' font-family='sans-serif' font-size='13' lengthAdjust='spacing' textLength='77' x='313' y='73.5684'>[git commit]</text></g><!--MD5=[686cccd021a9542b9e8d2359c9c14b67]
+link gh_pages to github_pages--><g id='link_gh_pages_github_pages'><path d='M510.21,79 C541.69,79 585.06,79 620.72,79 ' fill='none' id='gh_pages-to-github_pages' style='stroke:#181818;stroke-width:1.0;'/><polygon fill='#181818' points='625.93,79,616.93,75,620.93,79,616.93,83,625.93,79' style='stroke:#181818;stroke-width:1.0;'/><text fill='#000000' font-family='sans-serif' font-size='13' lengthAdjust='spacing' textLength='52' x='543' y='75.5684'>定期更新</text></g><!--MD5=[4a3b4780863dc8f89d336825ecaebd63]
+link github_pages to github.io--><g id='link_github_pages_github.io'><path d='M686,102.06 C686,115.94 686,133.73 686,148.49 ' fill='none' id='github_pages-to-github.io' style='stroke:#181818;stroke-width:1.0;'/><polygon fill='#181818' points='686,153.78,690,144.78,686,148.78,682,144.78,686,153.78' style='stroke:#181818;stroke-width:1.0;'/><text fill='#000000' font-family='sans-serif' font-size='13' lengthAdjust='spacing' textLength='26' x='661.5' y='133.0684'>推送</text></g></g></svg></div>
+<h3 id="自动复制">自动复制</h3>
+
+<p>jekyll 使用指令 <code class="language-plaintext highlighter-rouge">bundle exec jekyll build</code> 或 <code class="language-plaintext highlighter-rouge">bundle exec jekyll serve</code> 处理页面代码之后的静态内容全部都放在 <code class="language-plaintext highlighter-rouge">_site</code> 目录下，需要手工复制到 <code class="language-plaintext highlighter-rouge">blog-site</code> 目录，所以我们需要自动化脚本来处理这些事情。</p>
+
+<p>编辑根目录下的 <code class="language-plaintext highlighter-rouge">Rakefile</code> 在尾部增加：</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+</pre></td><td class="rouge-code"><pre><span class="c1"># copy from https://www.sitepoint.com/jekyll-plugins-github/</span>
+<span class="c1"># </span>
+<span class="no">GH_PAGES_DIR</span> <span class="o">=</span> <span class="s2">"blog-site"</span>
+
+<span class="n">desc</span> <span class="s2">"Build Jekyll site and copy files"</span>
+<span class="n">task</span> <span class="ss">:build</span> <span class="k">do</span>
+  <span class="nb">system</span> <span class="s2">"jekyll build"</span>
+  <span class="nb">system</span> <span class="s2">"rm -r ../</span><span class="si">#{</span><span class="no">GH_PAGES_DIR</span><span class="si">}</span><span class="s2">/*"</span> <span class="k">unless</span> <span class="no">Dir</span><span class="p">[</span><span class="s1">'../#{GH_PAGES_DIR}/*'</span><span class="p">].</span><span class="nf">empty?</span>
+  <span class="nb">system</span> <span class="s2">"cp -r _site/* ../</span><span class="si">#{</span><span class="no">GH_PAGES_DIR</span><span class="si">}</span><span class="s2">/"</span>
+  <span class="nb">system</span> <span class="s2">"echo nojekyll &gt; ../</span><span class="si">#{</span><span class="no">GH_PAGES_DIR</span><span class="si">}</span><span class="s2">/.nojekyll"</span>
+<span class="k">end</span>
+</pre></td></tr></tbody></table></code></pre></div></div>
+
+<p>然后检查 <code class="language-plaintext highlighter-rouge">_config.xml</code> 中的 <code class="language-plaintext highlighter-rouge">exclude</code> 项，把 <code class="language-plaintext highlighter-rouge">Rakefile</code> 加进去。我的该项配置内容如下，加了好多东西：</p>
+
+<div class="language-yml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+</pre></td><td class="rouge-code"><pre><span class="na">exclude</span><span class="pi">:</span>
+  <span class="pi">[</span>
+    <span class="s2">"</span><span class="s">less"</span><span class="pi">,</span>
+    <span class="s2">"</span><span class="s">node_modules"</span><span class="pi">,</span>
+    <span class="s2">"</span><span class="s">Gruntfile.js"</span><span class="pi">,</span>
+    <span class="s2">"</span><span class="s">package.json"</span><span class="pi">,</span>
+    <span class="s2">"</span><span class="s">package-lock.json"</span><span class="pi">,</span>
+    <span class="s2">"</span><span class="s">README.md"</span><span class="pi">,</span>
+    <span class="s2">"</span><span class="s">README.zh.md"</span><span class="pi">,</span>
+    <span class="s2">"</span><span class="s">Rakefile"</span>
+  <span class="pi">]</span>
+</pre></td></tr></tbody></table></code></pre></div></div>
+
+<h3 id="网站预览">网站预览</h3>
+
+<p>静态内容在 <code class="language-plaintext highlighter-rouge">blog-site</code> 目录下，并没有任何支持浏览器访问浏览的功能。为了把这个目录中的内容可网络访问，可以在 <code class="language-plaintext highlighter-rouge">blog-site</code> 目录下启动命令行运行</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+</pre></td><td class="rouge-code"><pre>python3 <span class="nt">-m</span> http.server
+</pre></td></tr></tbody></table></code></pre></div></div>
+
+<p>我的Mac电脑里有python环境，可以直接使用，如果各位看官运行命令的时候出现异常，请先检查python环境。</p>
+
+<h2 id="自动化辅助功能">自动化辅助功能</h2>
+
+<p>rake post title=”My first blog”</p>
+
+<p>rake build</p>
+
+<h2 id="参考文献">参考文献</h2>
+
+<ol>
+  <li><a href="https://www.bbsmax.com/A/A2dm9gmgde/">Github page搭建博客使用自定义插件的方法</a></li>
+  <li><a href="https://www.sitepoint.com/jekyll-plugins-github/">Jekyll Plugins on GitHub</a></li>
+  <li><a href="https://docs.github.com/cn/pages/quickstart">Quickstart for GitHub Pages</a></li>
+  <li><a href="https://xiaoiver.github.io/coding/2017/07/22/在GithubPages中使用第三方插件.html">在Github Pages中使用第三方插件</a></li>
+  <li><a href="https://www.jianshu.com/p/e31095941aeb">使用GitHub Page部署静态页面，以及.nojekyll的坑。。</a></li>
+  <li><a href="https://hoochanlon.github.io/2022/07-10/02">jekyll安装plantuml</a></li>
+  <li><a href="https://www.zhihu.com/question/20939566/answer/1685855994">有哪些 Jekyll 模板值得推荐？</a></li>
+  <li><a href="https://github.com/jeffreytse/jekyll-spaceship">Jekyll Spaceship</a></li>
+  <li><a href="https://zhuanlan.zhihu.com/p/60838339">kramdown基本语法</a></li>
+  <li><a href="https://github.com/swedbankpay/kramdown-plantuml">SwedbankPay/kramdown-plantuml</a></li>
+</ol>
+
+
+                <hr style="visibility: hidden;">
+                <ul class="pager">
+                    
+                    <li class="previous">
+                        <a href="/2022/11/04/DDD-Object-Reference/" data-toggle="tooltip" data-placement="top" title="DDD聚合对象的引用的一种实现方式">
+                        Previous<br>
+                        <span>DDD聚合对象的引用的一种实现方式</span>
+                        </a>
+                    </li>
+                    
+                    
+                </ul>
+                <hr style="visibility: hidden;">
+
+                
+
+                
+            </div>  
+
+    <!-- Side Catalog Container -->
+        
+            <div class="
+                col-lg-2 col-lg-offset-0
+                visible-lg-block
+                sidebar-container
+                catalog-container">
+                <div class="side-catalog">
+                    <hr class="hidden-sm hidden-xs">
+                    <h5>
+                        <a class="catalog-toggle" href="#">CATALOG</a>
+                    </h5>
+                    <ul class="catalog-body"></ul>
+                </div>
+            </div>
+        
+
+    <!-- Sidebar Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+
+
+<section>
+    
+        <hr class="hidden-sm hidden-xs">
+    
+    <h5><a href="/archive/">FEATURED TAGS</a></h5>
+    <div class="tags">
+        
+        
+        
+        
+        
+        
+                <a data-sort="0007" 
+                    href="/archive/?tag=%E6%9E%B6%E6%9E%84"
+                    title="架构"
+                    rel="3">架构</a>
+        
+                <a data-sort="0007" 
+                    href="/archive/?tag=%E6%96%B9%E6%B3%95"
+                    title="方法"
+                    rel="3">方法</a>
+        
+                <a data-sort="0007" 
+                    href="/archive/?tag=%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1"
+                    title="面向对象"
+                    rel="3">面向对象</a>
+        
+                <a data-sort="0008" 
+                    href="/archive/?tag=%E4%B8%9A%E5%8A%A1"
+                    title="业务"
+                    rel="2">业务</a>
+        
+                <a data-sort="0008" 
+                    href="/archive/?tag=%E4%BC%81%E4%B8%9A%E7%AE%A1%E7%90%86"
+                    title="企业管理"
+                    rel="2">企业管理</a>
+        
+                <a data-sort="0008" 
+                    href="/archive/?tag=%E5%BB%BA%E6%A8%A1"
+                    title="建模"
+                    rel="2">建模</a>
+        
+                <a data-sort="0008" 
+                    href="/archive/?tag=%E8%BD%AF%E4%BB%B6%E8%AE%BE%E8%AE%A1"
+                    title="软件设计"
+                    rel="2">软件设计</a>
+    </div>
+</section>
+
+
+                <!-- Friends Blog -->
+                
+<hr>
+<h5>FRIENDS</h5>
+<ul class="list-inline">
+  
+    
+  <li><a href="http://bigtall.cnblogs.com">博客园·老翅寒暑</a></li>
+    
+  
+    
+    <li>
+      <span>微信个人号·老翅寒暑</span>
+      <img src="/img/qrcode-bigtall.png" alt="微信个人号·老翅寒暑" />
+    </li>
+    
+  
+</ul>
+
+            </div>
+        </div>
+    </div>
+</article>
+
+<!-- add support for mathjax by voleking-->
+
+
+
+
+
+
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+<!-- anchor-js, Doc:http://bryanbraun.github.io/anchorjs/ -->
+<script>
+    async("//cdnjs.cloudflare.com/ajax/libs/anchor-js/1.1.1/anchor.min.js",function(){
+        anchors.options = {
+          visible: 'hover',
+          placement: 'right',
+          // icon: '#'
+        };
+        anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
+    })
+</script>
+<style>
+    /* place left on bigger screen */
+    @media all and (min-width: 800px) {
+        .anchorjs-link{
+            position: absolute;
+            left: -0.75em;
+            font-size: 1.1em;
+            margin-top : -0.1em;
+        }
+    }
+</style>
+
+
+
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <!-- SNS Link -->
+                
+
+
+<ul class="list-inline text-center">
+
+
+  
+  
+  
+  
+  
+  
+  <li>
+    <a target="_blank" href="https://github.com/jiangjianbo">
+      <span class="fa-stack fa-lg">
+        <i class="fa fa-circle fa-stack-2x"></i>
+        <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+      </span>
+    </a>
+  </li>
+  
+  
+</ul>
+
+                <p class="copyright text-muted">
+                    Copyright &copy; 老翅寒暑 2023
+                    <br>
+                    Powered by <a href="http://jiangjianbo.github.io">老翅寒暑</a>
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+<script src="/js/jquery.min.js"></script>
+
+<!-- Bootstrap Core JavaScript -->
+<!-- Currently, only navbar scroll-down effect at desktop still depends on this -->
+<script src="/js/bootstrap.min.js"></script>
+
+<!-- Custom Theme JavaScript -->
+<script src="/js/hux-blog.min.js"></script>
+
+<!-- Simple Jekyll Search -->
+<script src="/js/simple-jekyll-search.min.js"></script>
+
+<!-- Service Worker -->
+
+<script src="/js/snackbar.js"></script>
+<script src="/js/sw-registration.js"></script>
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+        var d = document, t = 'script',
+            o = d.createElement(t),
+            s = d.getElementsByTagName(t)[0];
+        o.src = u;
+        if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+        s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!--
+     Because of the native support for backtick-style fenced code blocks
+     right within the Markdown is landed in Github Pages,
+     From V1.6, There is no need for Highlight.js,
+     so Huxblog drops it officially.
+
+     - https://github.com/blog/2100-github-pages-now-faster-and-simpler-with-jekyll-3-0
+     - https://help.github.com/articles/creating-and-highlighting-code-blocks/
+     - https://github.com/jneen/rouge/wiki/list-of-supported-languages-and-lexers
+-->
+<!--
+    <script>
+        async("http://cdn.bootcss.com/highlight.js/8.6/highlight.min.js", function(){
+            hljs.initHighlightingOnLoad();
+        })
+    </script>
+    <link href="http://cdn.bootcss.com/highlight.js/8.6/styles/github.min.css" rel="stylesheet">
+-->
+
+
+
+
+
+
+
+<!--fastClick.js -->
+<script>
+    async("/js/fastclick.min.js", function () {
+        var $nav = document.querySelector("nav");
+        if ($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+<!-- Google Analytics -->
+
+
+
+<!-- Baidu Tongji -->
+
+
+
+<!-- Side Catalog -->
+
+<script type="text/javascript">
+    function generateCatalog(selector) {
+
+        // interop with multilangual 
+        if ('' == 'true') {
+            _containerSelector = 'div.post-container.active'
+        } else {
+            _containerSelector = 'div.post-container'
+        }
+
+        // init
+        var P = $(_containerSelector), a, n, t, l, i, c;
+        a = P.find('h1,h2,h3,h4,h5,h6');
+
+        // clean
+        $(selector).html('')
+
+        // appending
+        a.each(function () {
+            n = $(this).prop('tagName').toLowerCase();
+            i = "#" + $(this).prop('id');
+            t = $(this).text();
+            c = $('<a href="' + i + '" rel="nofollow">' + t + '</a>');
+            l = $('<li class="' + n + '_nav"></li>').append(c);
+            $(selector).append(l);
+        });
+        return true;
+    }
+
+    generateCatalog(".catalog-body");
+
+    // toggle side catalog
+    $(".catalog-toggle").click((function (e) {
+        e.preventDefault();
+        $('.side-catalog').toggleClass("fold")
+    }))
+
+    /*
+     * Doc: https://github.com/davist11/jQuery-One-Page-Nav
+     * Fork by Hux to support padding
+     */
+    async("/js/jquery.nav.js", function () {
+        $('.catalog-body').onePageNav({
+            currentClass: "active",
+            changeHash: !1,
+            easing: "swing",
+            filter: "",
+            scrollSpeed: 700,
+            scrollOffset: 0,
+            scrollThreshold: .2,
+            begin: null,
+            end: null,
+            scrollChange: null,
+            padding: 80
+        });
+    });
+</script>
+
+
+
+<!-- Multi-Lingual -->
+
+
+<!-- Simple Jekyll Search -->
+<script>
+    // https://stackoverflow.com/questions/1912501/unescape-html-entities-in-javascript
+    function htmlDecode(input) {
+        var e = document.createElement('textarea');
+        e.innerHTML = input;
+        // handle case of empty input
+        return e.childNodes.length === 0 ? "" : e.childNodes[0].nodeValue;
+    }
+
+    SimpleJekyllSearch({
+        searchInput: document.getElementById('search-input'),
+        resultsContainer: document.getElementById('search-results'),
+        json: '/search.json',
+        searchResultTemplate: '<div class="post-preview item"><a href="{url}"><h2 class="post-title">{title}</h2><h3 class="post-subtitle">{subtitle}</h3><hr></a></div>',
+        noResultsText: 'No results',
+        limit: 50,
+        fuzzy: false,
+        // a hack to get escaped subtitle unescaped. for some reason, 
+        // post.subtitle w/o escape filter nuke entire search.
+        templateMiddleware: function (prop, value, template) {
+            if (prop === 'subtitle' || prop === 'title') {
+                if (value.indexOf("code")) {
+                    return htmlDecode(value);
+                } else {
+                    return value;
+                }
+            }
+        }
+    });
+
+    $(document).ready(function () {
+        var $searchPage = $('.search-page');
+        var $searchOpen = $('.search-icon');
+        var $searchClose = $('.search-icon-close');
+        var $searchInput = $('#search-input');
+        var $body = $('body');
+
+        $searchOpen.on('click', function (e) {
+            e.preventDefault();
+            $searchPage.toggleClass('search-active');
+            var prevClasses = $body.attr('class') || '';
+            setTimeout(function () {
+                $body.addClass('no-scroll');
+            }, 400)
+
+            if ($searchPage.hasClass('search-active')) {
+                $searchClose.on('click', function (e) {
+                    e.preventDefault();
+                    $searchPage.removeClass('search-active');
+                    $body.attr('class', prevClasses);  // from closure 
+                });
+                $searchInput.focus();
+            }
+        });
+    });
+</script>
+
+
+<!-- Image to hack wechat -->
+<img src="/img/icon_wechat.png" width="0" height="0" />
+<!-- Migrate from head to bottom, no longer block render and still work -->
+
+</body>
+
+</html>

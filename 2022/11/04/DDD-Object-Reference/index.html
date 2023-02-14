@@ -1,0 +1,817 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <meta name="description" content="一个老鸟的自白">
+    <meta name="keywords" content="BigTall, BigTall Blog, 老翅寒暑, archetype, software design, OOA, OOD">
+    <meta name="theme-color" content="#000000">
+
+    <!-- Open Graph -->
+    <meta property="og:title"
+        content="DDD聚合对象的引用的一种实现方式 - 老翅寒暑 | BigTall Blog">
+    
+    <meta property="og:type" content="article">
+    <meta property="og:description" content="前言
+">
+    
+    <meta property="article:published_time" content=" 2022-11-04T00:00:00Z">
+    
+    
+    <meta property="article:author" content="BigTall">
+    
+    
+    <meta property="article:tag" content="方法">
+    
+    <meta property="article:tag" content="架构">
+    
+    <meta property="article:tag" content="DDD">
+    
+    <meta property="article:tag" content="MapStruct">
+    
+    <meta property="article:tag" content="领域对象">
+    
+    <meta property="article:tag" content="聚合根">
+    
+    
+    <meta property="og:image" content="/img/about-bigtall-gentle.jpg">
+    <meta property="og:url" content="/2022/11/04/DDD-Object-Reference/">
+    <meta property="og:site_name" content="老翅寒暑 | BigTall Blog">
+
+    <title>DDD聚合对象的引用的一种实现方式 - 老翅寒暑 | BigTall Blog</title>
+
+    <!-- Web App Manifest -->
+    <link rel="manifest" href="/pwa/manifest.json">
+
+    <!-- Favicon -->
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <!-- Canonical URL -->
+    <link rel="canonical" href="http://localhost:4000/2022/11/04/DDD-Object-Reference/">
+
+    <!-- Bootstrap Core CSS -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/hux-blog.min.css">
+
+    <!-- Custom Fonts -->
+    <!-- <link href="http://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
+    <!-- Hux change font-awesome CDN to qiniu -->
+    <link href="/css/font-awesome.min.css" rel="stylesheet"
+        type="text/css">
+
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- ga & ba script hoook -->
+    <script></script>
+
+
+</head>
+
+
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
+
+    <!-- Navigation -->
+
+    <nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+        
+        <div class="container-fluid">
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header page-scroll">
+                <button type="button" class="navbar-toggle">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="/">老翅寒暑</a>
+            </div>
+
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div id="huxblog_navbar">
+                <div class="navbar-collapse">
+                    <ul class="nav navbar-nav navbar-right">
+                        <li>
+                            <a href="/">Home</a>
+                        </li>
+                        
+                        
+                        
+                        
+                        <li>
+                            <a href="/about/">About</a>
+                        </li>
+                        
+                        
+                        
+                        <li>
+                            <a href="/archive/">Archive</a>
+                        </li>
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        <li>
+                            <a href="/tags/">Tags</a>
+                        </li>
+                        
+                        
+                        <li class="search-icon">
+                            <a href="javascript:void(0)">
+                                <i class="fa fa-search"></i>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <!-- /.navbar-collapse -->
+        </div>
+        <!-- /.container -->
+    </nav>
+
+    <script>
+        // Drop Bootstarp low-performance Navbar
+        // Use customize navbar with high-quality material design animation
+        // in high-perf jank-free CSS3 implementation
+        var $body = document.body;
+        var $toggle = document.querySelector('.navbar-toggle');
+        var $navbar = document.querySelector('#huxblog_navbar');
+        var $collapse = document.querySelector('.navbar-collapse');
+
+        var __HuxNav__ = {
+            close: function () {
+                $navbar.className = " ";
+                // wait until animation end.
+                setTimeout(function () {
+                    // prevent frequently toggle
+                    if ($navbar.className.indexOf('in') < 0) {
+                        $collapse.style.height = "0px"
+                    }
+                }, 400)
+            },
+            open: function () {
+                $collapse.style.height = "auto"
+                $navbar.className += " in";
+            }
+        }
+
+        // Bind Event
+        $toggle.addEventListener('click', function (e) {
+            if ($navbar.className.indexOf('in') > 0) {
+                __HuxNav__.close()
+            } else {
+                __HuxNav__.open()
+            }
+        })
+
+        /**
+         * Since Fastclick is used to delegate 'touchstart' globally
+         * to hack 300ms delay in iOS by performing a fake 'click',
+         * Using 'e.stopPropagation' to stop 'touchstart' event from 
+         * $toggle/$collapse will break global delegation.
+         * 
+         * Instead, we use a 'e.target' filter to prevent handler
+         * added to document close HuxNav.  
+         *
+         * Also, we use 'click' instead of 'touchstart' as compromise
+         */
+        document.addEventListener('click', function (e) {
+            if (e.target == $toggle) return;
+            if (e.target.className == 'icon-bar') return;
+            __HuxNav__.close();
+        })
+    </script>
+    <!-- Search -->
+<div class="search-page">
+  <div class="search-icon-close-container">
+    <span class="search-icon-close">
+      <i class="fa fa-chevron-down"></i>
+    </span>
+  </div>
+  <div class="search-main container">
+    <div class="row">
+      <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+        <form></form>
+        <input type="text" id="search-input" placeholder="$ grep...">
+        </form>
+        <div id="search-results" class="mini-post-list"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    <!-- Image to hack wechat -->
+<!-- <img src="/img/icon_wechat.png" width="0" height="0"> -->
+<!-- <img src="/img/post-bg-sunset.jpg" width="0" height="0"> -->
+
+<!-- Post Header -->
+
+
+
+<style type="text/css">
+    header.intro-header{
+        position: relative;
+        background-image: url('/img/post-bg-sunset.jpg');
+        background: ;
+    }
+
+    
+</style>
+
+
+
+
+<header class="intro-header" >
+
+    <div class="header-mask"></div>
+    
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <div class="tags">
+                        
+                        <a class="tag" href="/archive/?tag=%E6%96%B9%E6%B3%95" title="方法">方法</a>
+                        
+                        <a class="tag" href="/archive/?tag=%E6%9E%B6%E6%9E%84" title="架构">架构</a>
+                        
+                        <a class="tag" href="/archive/?tag=DDD" title="DDD">DDD</a>
+                        
+                        <a class="tag" href="/archive/?tag=MapStruct" title="MapStruct">MapStruct</a>
+                        
+                        <a class="tag" href="/archive/?tag=%E9%A2%86%E5%9F%9F%E5%AF%B9%E8%B1%A1" title="领域对象">领域对象</a>
+                        
+                        <a class="tag" href="/archive/?tag=%E8%81%9A%E5%90%88%E6%A0%B9" title="聚合根">聚合根</a>
+                        
+                    </div>
+                    <h1>DDD聚合对象的引用的一种实现方式</h1>
+                    
+                    <h2 class="subheading">我的DDD实战</h2>
+                    <span class="meta">Posted by BigTall on November 4, 2022</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+
+
+
+
+
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+    <!-- Post Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                <!-- Multi-Lingual -->
+                
+
+				<h2 id="前言">前言</h2>
+
+<p>在DDD的实践中，聚合是第一个要面对的概念。通俗点的概念讲，聚合就是类似主从表结构，我们把主表称为“聚合根”。DDD建议我们在聚合内部实体之间的引用直接使用关联，聚合之间的相互引用就要通过“对象引用”进行。</p>
+
+<p>我们通常的应用都会用到数据库，按照DDD的要求，那就是直接用ID进行引用。类似如下，对“学校”实体的引用变成了 <code class="language-plaintext highlighter-rouge">Long schoolId</code>。如果是在面向对象的结构中，正确的引用方式应该是 <code class="language-plaintext highlighter-rouge">School school</code>。</p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+</pre></td><td class="rouge-code"><pre><span class="nd">@Data</span>
+<span class="kd">class</span> <span class="nc">PersonDDD</span> <span class="o">{</span>
+    <span class="nc">Long</span> <span class="n">id</span><span class="o">;</span>
+    <span class="nc">String</span> <span class="n">name</span><span class="o">;</span>
+    <span class="nc">Long</span> <span class="n">schoolId</span><span class="o">;</span>
+<span class="o">}</span>
+
+<span class="nd">@Data</span>
+<span class="kd">class</span> <span class="nc">PersonOO</span> <span class="o">{</span>
+    <span class="nc">Long</span> <span class="n">id</span><span class="o">;</span>
+    <span class="nc">String</span> <span class="n">name</span><span class="o">;</span>
+    <span class="nc">School</span> <span class="n">school</span><span class="o">;</span>
+<span class="o">}</span>
+
+</pre></td></tr></tbody></table></code></pre></div></div>
+<p>一个复杂的系统中，可以存在大量的聚合，每个聚合之间存在复杂的关联关系，如果直接使用ID来查询，会导致每次要使用对象前都要根据ID来一次查询，势必引起业务的复杂化，把已经本来就很复杂的代码结构更加复杂化。</p>
+
+<p>Spring Data中提供了诸如 Aggregate Roots 和相关 Domain Events 事件机制。但是并没有给出一个好的解决聚合引用的方案。</p>
+
+<h2 id="方案">方案</h2>
+
+<p>本文实现方案是仿照C语言的指针概念，实现了完全面向对象化的聚合对象引用。总体架构图如下：</p>
+
+<div class="plantuml"><svg contentStyleType='text/css' height='470px' preserveAspectRatio='none' style='width:273px;height:470px;background:#FFFFFF;' version='1.1' viewBox='0 0 273 470' width='273px' xmlns:xlink='http://www.w3.org/1999/xlink' xmlns='http://www.w3.org/2000/svg' zoomAndPan='magnify'><defs/><g><!--MD5=[f30a455e284cff24563ab618219b29b5]
+class ref--><g id='elem_ref'><rect codeLine='2' fill='#F1F1F1' height='64.4883' id='ref' rx='2.5' ry='2.5' style='stroke:#181818;stroke-width:0.5;' width='100' x='84.5' y='399'/><ellipse cx='99.5' cy='415' fill='#ADD1B2' rx='11' ry='11' style='stroke:#181818;stroke-width:1.0;'/><path d='M101.9731,421.1431 Q101.3921,421.4419 100.7529,421.5913 Q100.1138,421.7407 99.4082,421.7407 Q96.9014,421.7407 95.5815,420.0889 Q94.2617,418.437 94.2617,415.3159 Q94.2617,412.1865 95.5815,410.5347 Q96.9014,408.8828 99.4082,408.8828 Q100.1138,408.8828 100.7612,409.0322 Q101.4087,409.1816 101.9731,409.4805 L101.9731,412.2031 Q101.3423,411.6221 100.7488,411.3523 Q100.1553,411.0825 99.5244,411.0825 Q98.1797,411.0825 97.4949,412.1492 Q96.8101,413.2158 96.8101,415.3159 Q96.8101,417.4077 97.4949,418.4744 Q98.1797,419.541 99.5244,419.541 Q100.1553,419.541 100.7488,419.2712 Q101.3423,419.0015 101.9731,418.4204 Z ' fill='#000000'/><text fill='#000000' font-family='sans-serif' font-size='14' lengthAdjust='spacing' textLength='56' x='113.5' y='420.291'>对象引用</text><rect fill='#FFFFFF' height='16.1328' style='stroke:#000000;stroke-width:1.0;stroke-dasharray:2.0,2.0;' width='10' x='177.5' y='396'/><text fill='#000000' font-family='sans-serif' font-size='12' font-style='italic' lengthAdjust='spacing' textLength='8' x='178.5' y='408.6016'>T</text><line style='stroke:#181818;stroke-width:0.5;' x1='85.5' x2='183.5' y1='431' y2='431'/><line style='stroke:#181818;stroke-width:0.5;' x1='85.5' x2='183.5' y1='439' y2='439'/><ellipse cx='95.5' cy='450' fill='#84BE84' rx='3' ry='3' style='stroke:#038048;stroke-width:1.0;'/><text fill='#000000' font-family='sans-serif' font-size='14' lengthAdjust='spacing' textLength='53' x='104.5' y='456.5352'>get() : T</text></g><!--MD5=[437c56a43cb614ba172407b0270749a7]
+class cached_ref--><g id='elem_cached_ref'><rect codeLine='6' fill='#F1F1F1' height='64.4883' id='cached_ref' rx='2.5' ry='2.5' style='stroke:#181818;stroke-width:0.5;' width='156' x='56.5' y='275'/><ellipse cx='71.5' cy='291' fill='#ADD1B2' rx='11' ry='11' style='stroke:#181818;stroke-width:1.0;'/><path d='M73.9731,297.1431 Q73.3921,297.4419 72.7529,297.5913 Q72.1138,297.7407 71.4082,297.7407 Q68.9014,297.7407 67.5815,296.0889 Q66.2617,294.437 66.2617,291.3159 Q66.2617,288.1865 67.5815,286.5347 Q68.9014,284.8828 71.4082,284.8828 Q72.1138,284.8828 72.7612,285.0322 Q73.4087,285.1816 73.9731,285.4805 L73.9731,288.2031 Q73.3423,287.6221 72.7488,287.3523 Q72.1553,287.0825 71.5244,287.0825 Q70.1797,287.0825 69.4949,288.1492 Q68.8101,289.2158 68.8101,291.3159 Q68.8101,293.4077 69.4949,294.4744 Q70.1797,295.541 71.5244,295.541 Q72.1553,295.541 72.7488,295.2712 Q73.3423,295.0015 73.9731,294.4204 Z ' fill='#000000'/><text fill='#000000' font-family='sans-serif' font-size='14' lengthAdjust='spacing' textLength='112' x='85.5' y='296.291'>带缓存的对象引用</text><rect fill='#FFFFFF' height='16.1328' style='stroke:#000000;stroke-width:1.0;stroke-dasharray:2.0,2.0;' width='10' x='205.5' y='272'/><text fill='#000000' font-family='sans-serif' font-size='12' font-style='italic' lengthAdjust='spacing' textLength='8' x='206.5' y='284.6016'>T</text><line style='stroke:#181818;stroke-width:0.5;' x1='57.5' x2='211.5' y1='307' y2='307'/><line style='stroke:#181818;stroke-width:0.5;' x1='57.5' x2='211.5' y1='315' y2='315'/><ellipse cx='67.5' cy='326' fill='#84BE84' rx='3' ry='3' style='stroke:#038048;stroke-width:1.0;'/><text fill='#000000' font-family='sans-serif' font-size='14' lengthAdjust='spacing' textLength='53' x='76.5' y='332.5352'>get() : T</text></g><!--MD5=[31f6fe88ea703674f0a35513d2241e94]
+class id_ref--><g id='elem_id_ref'><rect codeLine='10' fill='#F1F1F1' height='64.4883' id='id_ref' rx='2.5' ry='2.5' style='stroke:#181818;stroke-width:0.5;' width='148' x='60.5' y='151'/><ellipse cx='75.5' cy='167' fill='#ADD1B2' rx='11' ry='11' style='stroke:#181818;stroke-width:1.0;'/><path d='M77.9731,173.1431 Q77.3921,173.4419 76.7529,173.5913 Q76.1138,173.7407 75.4082,173.7407 Q72.9014,173.7407 71.5815,172.0889 Q70.2617,170.437 70.2617,167.3159 Q70.2617,164.1865 71.5815,162.5347 Q72.9014,160.8828 75.4082,160.8828 Q76.1138,160.8828 76.7612,161.0322 Q77.4087,161.1816 77.9731,161.4805 L77.9731,164.2031 Q77.3423,163.6221 76.7488,163.3523 Q76.1553,163.0825 75.5244,163.0825 Q74.1797,163.0825 73.4949,164.1492 Q72.8101,165.2158 72.8101,167.3159 Q72.8101,169.4077 73.4949,170.4744 Q74.1797,171.541 75.5244,171.541 Q76.1553,171.541 76.7488,171.2712 Q77.3423,171.0015 77.9731,170.4204 Z ' fill='#000000'/><text fill='#000000' font-family='sans-serif' font-size='14' lengthAdjust='spacing' textLength='84' x='89.5' y='172.291'>带ID对象引用</text><rect fill='#FFFFFF' height='16.1328' style='stroke:#000000;stroke-width:1.0;stroke-dasharray:2.0,2.0;' width='30' x='181.5' y='148'/><text fill='#000000' font-family='sans-serif' font-size='12' font-style='italic' lengthAdjust='spacing' textLength='28' x='182.5' y='160.6016'>T, ID</text><line style='stroke:#181818;stroke-width:0.5;' x1='61.5' x2='207.5' y1='183' y2='183'/><line style='stroke:#181818;stroke-width:0.5;' x1='61.5' x2='207.5' y1='191' y2='191'/><ellipse cx='71.5' cy='202' fill='#84BE84' rx='3' ry='3' style='stroke:#038048;stroke-width:1.0;'/><text fill='#000000' font-family='sans-serif' font-size='14' lengthAdjust='spacing' textLength='59' x='80.5' y='208.5352'>id() ： ID</text></g><!--MD5=[9d6852aaa689380095493ad6f5599d0a]
+class jpa_ref--><g id='elem_jpa_ref'><rect codeLine='14' fill='#F1F1F1' height='80.9766' id='jpa_ref' rx='2.5' ry='2.5' style='stroke:#181818;stroke-width:0.5;' width='255' x='7' y='10'/><ellipse cx='75.25' cy='26' fill='#ADD1B2' rx='11' ry='11' style='stroke:#181818;stroke-width:1.0;'/><path d='M77.7231,32.1431 Q77.1421,32.4419 76.5029,32.5913 Q75.8638,32.7407 75.1582,32.7407 Q72.6514,32.7407 71.3315,31.0889 Q70.0117,29.437 70.0117,26.3159 Q70.0117,23.1865 71.3315,21.5347 Q72.6514,19.8828 75.1582,19.8828 Q75.8638,19.8828 76.5112,20.0322 Q77.1587,20.1816 77.7231,20.4805 L77.7231,23.2031 Q77.0923,22.6221 76.4988,22.3523 Q75.9053,22.0825 75.2744,22.0825 Q73.9297,22.0825 73.2449,23.1492 Q72.5601,24.2158 72.5601,26.3159 Q72.5601,28.4077 73.2449,29.4744 Q73.9297,30.541 75.2744,30.541 Q75.9053,30.541 76.4988,30.2712 Q77.0923,30.0015 77.7231,29.4204 Z ' fill='#000000'/><text fill='#000000' font-family='sans-serif' font-size='14' lengthAdjust='spacing' textLength='78' x='95.75' y='31.291'>JPA对象引用</text><rect fill='#FFFFFF' height='16.1328' style='stroke:#000000;stroke-width:1.0;stroke-dasharray:2.0,2.0;' width='30' x='235' y='7'/><text fill='#000000' font-family='sans-serif' font-size='12' font-style='italic' lengthAdjust='spacing' textLength='28' x='236' y='19.6016'>T, ID</text><line style='stroke:#181818;stroke-width:0.5;' x1='8' x2='261' y1='42' y2='42'/><rect fill='none' height='6' style='stroke:#C82930;stroke-width:1.0;' width='6' x='15' y='50'/><text fill='#000000' font-family='sans-serif' font-size='14' lengthAdjust='spacing' textLength='229' x='27' y='59.5352'>repository : JpaRepository&lt;T, ID&gt;</text><line style='stroke:#181818;stroke-width:0.5;' x1='8' x2='261' y1='66.4883' y2='66.4883'/><ellipse cx='18' cy='77.4883' fill='#84BE84' rx='3' ry='3' style='stroke:#038048;stroke-width:1.0;'/><text fill='#000000' font-family='sans-serif' font-size='14' lengthAdjust='spacing' textLength='53' x='27' y='84.0234'>get() : T</text></g><!--MD5=[1243381374b6917f6732ed136d32eef5]
+link cached_ref to ref--><g id='link_cached_ref_ref'><path codeLine='19' d='M134.5,339.1 C134.5,351.15 134.5,365.26 134.5,378.72 ' fill='none' id='cached_ref-to-ref' style='stroke:#181818;stroke-width:1.0;'/><polygon fill='none' points='141.5,378.96,134.5,398.96,127.5,378.96,141.5,378.96' style='stroke:#181818;stroke-width:1.0;'/></g><!--MD5=[49b0bcf5bc3f0e864f28b9997f47731a]
+link id_ref to cached_ref--><g id='link_id_ref_cached_ref'><path codeLine='20' d='M134.5,215.1 C134.5,227.15 134.5,241.26 134.5,254.72 ' fill='none' id='id_ref-to-cached_ref' style='stroke:#181818;stroke-width:1.0;'/><polygon fill='none' points='141.5,254.96,134.5,274.96,127.5,254.96,141.5,254.96' style='stroke:#181818;stroke-width:1.0;'/></g><!--MD5=[9c23c3ba0c89464e2b87fd6aecb85759]
+link jpa_ref to id_ref--><g id='link_jpa_ref_id_ref'><path codeLine='21' d='M134.5,91.01 C134.5,103.46 134.5,117.4 134.5,130.56 ' fill='none' id='jpa_ref-to-id_ref' style='stroke:#181818;stroke-width:1.0;'/><polygon fill='none' points='141.5,130.91,134.5,150.91,127.5,130.91,141.5,130.91' style='stroke:#181818;stroke-width:1.0;'/></g></g></svg></div>
+<p>其中，对象引用是基础接口，所有需要用到对象的时候，就调用 <code class="language-plaintext highlighter-rouge">.get()</code> 接口获取。最终在数据层实现自带jpa存取接口，通过id查询获得对象。</p>
+
+<h2 id="使用">使用</h2>
+
+<p>将开始的案例修改一下：</p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+</pre></td><td class="rouge-code"><pre>
+<span class="kd">interface</span> <span class="nc">Refer</span><span class="o">&lt;</span><span class="no">T</span><span class="o">&gt;</span> <span class="o">{</span>
+    <span class="no">T</span> <span class="nf">get</span><span class="o">();</span>
+<span class="o">}</span>
+
+<span class="nd">@Value</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">JpaRefer</span><span class="o">&lt;</span><span class="no">T</span><span class="o">,</span> <span class="no">ID</span><span class="o">&gt;</span> <span class="kd">implements</span> <span class="nc">Refer</span><span class="o">&lt;</span><span class="no">T</span><span class="o">&gt;</span> <span class="o">{</span>
+    <span class="kd">private</span> <span class="no">ID</span> <span class="n">id</span><span class="o">;</span>
+    <span class="kd">private</span> <span class="nc">JpaRepository</span><span class="o">&lt;</span><span class="no">T</span><span class="o">,</span> <span class="no">ID</span><span class="o">&gt;</span> <span class="n">repository</span><span class="o">;</span>
+
+    <span class="kd">public</span> <span class="no">T</span> <span class="nf">get</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="n">repository</span><span class="o">.</span><span class="na">findById</span><span class="o">(</span><span class="n">id</span><span class="o">);</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+
+<span class="nd">@Data</span>
+<span class="kd">class</span> <span class="nc">PersonOO</span> <span class="o">{</span>
+    <span class="nc">Long</span> <span class="n">id</span><span class="o">;</span>
+    <span class="nc">String</span> <span class="n">name</span><span class="o">;</span>
+    <span class="nc">JpaRefer</span><span class="o">&lt;</span><span class="nc">School</span><span class="o">&gt;</span> <span class="n">school</span><span class="o">;</span>
+<span class="o">}</span>
+
+</pre></td></tr></tbody></table></code></pre></div></div>
+<p>在实际使用的时候，除了要多调用一次 <code class="language-plaintext highlighter-rouge">get</code> 之外，从使用体验角度来说，没有太多的改变。但是实现了聚合间对象引用的解耦。</p>
+
+
+
+                <hr style="visibility: hidden;">
+                <ul class="pager">
+                    
+                    <li class="previous">
+                        <a href="/2019/05/28/Model-For-Cash-Flow/" data-toggle="tooltip" data-placement="top" title="企业要为现金流建模">
+                        Previous<br>
+                        <span>企业要为现金流建模</span>
+                        </a>
+                    </li>
+                    
+                    
+                    <li class="next">
+                        <a href="/2022/12/13/Jekyll-Site/" data-toggle="tooltip" data-placement="top" title="为Jekyll静态网站添加PlantUML插件">
+                        Next<br>
+                        <span>为Jekyll静态网站添加PlantUML插件</span>
+                        </a>
+                    </li>
+                    
+                </ul>
+                <hr style="visibility: hidden;">
+
+                
+
+                
+            </div>  
+
+    <!-- Side Catalog Container -->
+        
+            <div class="
+                col-lg-2 col-lg-offset-0
+                visible-lg-block
+                sidebar-container
+                catalog-container">
+                <div class="side-catalog">
+                    <hr class="hidden-sm hidden-xs">
+                    <h5>
+                        <a class="catalog-toggle" href="#">CATALOG</a>
+                    </h5>
+                    <ul class="catalog-body"></ul>
+                </div>
+            </div>
+        
+
+    <!-- Sidebar Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+
+
+<section>
+    
+        <hr class="hidden-sm hidden-xs">
+    
+    <h5><a href="/archive/">FEATURED TAGS</a></h5>
+    <div class="tags">
+        
+        
+        
+        
+        
+        
+                <a data-sort="0007" 
+                    href="/archive/?tag=%E6%9E%B6%E6%9E%84"
+                    title="架构"
+                    rel="3">架构</a>
+        
+                <a data-sort="0007" 
+                    href="/archive/?tag=%E6%96%B9%E6%B3%95"
+                    title="方法"
+                    rel="3">方法</a>
+        
+                <a data-sort="0007" 
+                    href="/archive/?tag=%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1"
+                    title="面向对象"
+                    rel="3">面向对象</a>
+        
+                <a data-sort="0008" 
+                    href="/archive/?tag=%E4%B8%9A%E5%8A%A1"
+                    title="业务"
+                    rel="2">业务</a>
+        
+                <a data-sort="0008" 
+                    href="/archive/?tag=%E4%BC%81%E4%B8%9A%E7%AE%A1%E7%90%86"
+                    title="企业管理"
+                    rel="2">企业管理</a>
+        
+                <a data-sort="0008" 
+                    href="/archive/?tag=%E5%BB%BA%E6%A8%A1"
+                    title="建模"
+                    rel="2">建模</a>
+        
+                <a data-sort="0008" 
+                    href="/archive/?tag=%E8%BD%AF%E4%BB%B6%E8%AE%BE%E8%AE%A1"
+                    title="软件设计"
+                    rel="2">软件设计</a>
+    </div>
+</section>
+
+
+                <!-- Friends Blog -->
+                
+<hr>
+<h5>FRIENDS</h5>
+<ul class="list-inline">
+  
+    
+  <li><a href="http://bigtall.cnblogs.com">博客园·老翅寒暑</a></li>
+    
+  
+    
+    <li>
+      <span>微信个人号·老翅寒暑</span>
+      <img src="/img/qrcode-bigtall.png" alt="微信个人号·老翅寒暑" />
+    </li>
+    
+  
+</ul>
+
+            </div>
+        </div>
+    </div>
+</article>
+
+<!-- add support for mathjax by voleking-->
+
+
+
+
+
+
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+<!-- anchor-js, Doc:http://bryanbraun.github.io/anchorjs/ -->
+<script>
+    async("//cdnjs.cloudflare.com/ajax/libs/anchor-js/1.1.1/anchor.min.js",function(){
+        anchors.options = {
+          visible: 'hover',
+          placement: 'right',
+          // icon: '#'
+        };
+        anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
+    })
+</script>
+<style>
+    /* place left on bigger screen */
+    @media all and (min-width: 800px) {
+        .anchorjs-link{
+            position: absolute;
+            left: -0.75em;
+            font-size: 1.1em;
+            margin-top : -0.1em;
+        }
+    }
+</style>
+
+
+
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <!-- SNS Link -->
+                
+
+
+<ul class="list-inline text-center">
+
+
+  
+  
+  
+  
+  
+  
+  <li>
+    <a target="_blank" href="https://github.com/jiangjianbo">
+      <span class="fa-stack fa-lg">
+        <i class="fa fa-circle fa-stack-2x"></i>
+        <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+      </span>
+    </a>
+  </li>
+  
+  
+</ul>
+
+                <p class="copyright text-muted">
+                    Copyright &copy; 老翅寒暑 2023
+                    <br>
+                    Powered by <a href="http://jiangjianbo.github.io">老翅寒暑</a>
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+<script src="/js/jquery.min.js"></script>
+
+<!-- Bootstrap Core JavaScript -->
+<!-- Currently, only navbar scroll-down effect at desktop still depends on this -->
+<script src="/js/bootstrap.min.js"></script>
+
+<!-- Custom Theme JavaScript -->
+<script src="/js/hux-blog.min.js"></script>
+
+<!-- Simple Jekyll Search -->
+<script src="/js/simple-jekyll-search.min.js"></script>
+
+<!-- Service Worker -->
+
+<script src="/js/snackbar.js"></script>
+<script src="/js/sw-registration.js"></script>
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+        var d = document, t = 'script',
+            o = d.createElement(t),
+            s = d.getElementsByTagName(t)[0];
+        o.src = u;
+        if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+        s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!--
+     Because of the native support for backtick-style fenced code blocks
+     right within the Markdown is landed in Github Pages,
+     From V1.6, There is no need for Highlight.js,
+     so Huxblog drops it officially.
+
+     - https://github.com/blog/2100-github-pages-now-faster-and-simpler-with-jekyll-3-0
+     - https://help.github.com/articles/creating-and-highlighting-code-blocks/
+     - https://github.com/jneen/rouge/wiki/list-of-supported-languages-and-lexers
+-->
+<!--
+    <script>
+        async("http://cdn.bootcss.com/highlight.js/8.6/highlight.min.js", function(){
+            hljs.initHighlightingOnLoad();
+        })
+    </script>
+    <link href="http://cdn.bootcss.com/highlight.js/8.6/styles/github.min.css" rel="stylesheet">
+-->
+
+
+
+
+
+
+
+<!--fastClick.js -->
+<script>
+    async("/js/fastclick.min.js", function () {
+        var $nav = document.querySelector("nav");
+        if ($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+<!-- Google Analytics -->
+
+
+
+<!-- Baidu Tongji -->
+
+
+
+<!-- Side Catalog -->
+
+<script type="text/javascript">
+    function generateCatalog(selector) {
+
+        // interop with multilangual 
+        if ('' == 'true') {
+            _containerSelector = 'div.post-container.active'
+        } else {
+            _containerSelector = 'div.post-container'
+        }
+
+        // init
+        var P = $(_containerSelector), a, n, t, l, i, c;
+        a = P.find('h1,h2,h3,h4,h5,h6');
+
+        // clean
+        $(selector).html('')
+
+        // appending
+        a.each(function () {
+            n = $(this).prop('tagName').toLowerCase();
+            i = "#" + $(this).prop('id');
+            t = $(this).text();
+            c = $('<a href="' + i + '" rel="nofollow">' + t + '</a>');
+            l = $('<li class="' + n + '_nav"></li>').append(c);
+            $(selector).append(l);
+        });
+        return true;
+    }
+
+    generateCatalog(".catalog-body");
+
+    // toggle side catalog
+    $(".catalog-toggle").click((function (e) {
+        e.preventDefault();
+        $('.side-catalog').toggleClass("fold")
+    }))
+
+    /*
+     * Doc: https://github.com/davist11/jQuery-One-Page-Nav
+     * Fork by Hux to support padding
+     */
+    async("/js/jquery.nav.js", function () {
+        $('.catalog-body').onePageNav({
+            currentClass: "active",
+            changeHash: !1,
+            easing: "swing",
+            filter: "",
+            scrollSpeed: 700,
+            scrollOffset: 0,
+            scrollThreshold: .2,
+            begin: null,
+            end: null,
+            scrollChange: null,
+            padding: 80
+        });
+    });
+</script>
+
+
+
+<!-- Multi-Lingual -->
+
+
+<!-- Simple Jekyll Search -->
+<script>
+    // https://stackoverflow.com/questions/1912501/unescape-html-entities-in-javascript
+    function htmlDecode(input) {
+        var e = document.createElement('textarea');
+        e.innerHTML = input;
+        // handle case of empty input
+        return e.childNodes.length === 0 ? "" : e.childNodes[0].nodeValue;
+    }
+
+    SimpleJekyllSearch({
+        searchInput: document.getElementById('search-input'),
+        resultsContainer: document.getElementById('search-results'),
+        json: '/search.json',
+        searchResultTemplate: '<div class="post-preview item"><a href="{url}"><h2 class="post-title">{title}</h2><h3 class="post-subtitle">{subtitle}</h3><hr></a></div>',
+        noResultsText: 'No results',
+        limit: 50,
+        fuzzy: false,
+        // a hack to get escaped subtitle unescaped. for some reason, 
+        // post.subtitle w/o escape filter nuke entire search.
+        templateMiddleware: function (prop, value, template) {
+            if (prop === 'subtitle' || prop === 'title') {
+                if (value.indexOf("code")) {
+                    return htmlDecode(value);
+                } else {
+                    return value;
+                }
+            }
+        }
+    });
+
+    $(document).ready(function () {
+        var $searchPage = $('.search-page');
+        var $searchOpen = $('.search-icon');
+        var $searchClose = $('.search-icon-close');
+        var $searchInput = $('#search-input');
+        var $body = $('body');
+
+        $searchOpen.on('click', function (e) {
+            e.preventDefault();
+            $searchPage.toggleClass('search-active');
+            var prevClasses = $body.attr('class') || '';
+            setTimeout(function () {
+                $body.addClass('no-scroll');
+            }, 400)
+
+            if ($searchPage.hasClass('search-active')) {
+                $searchClose.on('click', function (e) {
+                    e.preventDefault();
+                    $searchPage.removeClass('search-active');
+                    $body.attr('class', prevClasses);  // from closure 
+                });
+                $searchInput.focus();
+            }
+        });
+    });
+</script>
+
+
+<!-- Image to hack wechat -->
+<img src="/img/icon_wechat.png" width="0" height="0" />
+<!-- Migrate from head to bottom, no longer block render and still work -->
+
+</body>
+
+</html>

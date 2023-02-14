@@ -12,17 +12,17 @@
 
     <!-- Open Graph -->
     <meta property="og:title"
-        content="404 - 老翅寒暑 | BigTall Blog">
+        content="About - 老翅寒暑 | BigTall Blog">
     
     <meta property="og:type" content="website">
     <meta property="og:description"
-        content="你来到了没有知识的荒原 :(">
+        content="欢迎来到老翅寒暑的个人介绍页面">
     
     <meta property="og:image" content="/img/about-bigtall-gentle.jpg">
-    <meta property="og:url" content="/404.html">
+    <meta property="og:url" content="/about/">
     <meta property="og:site_name" content="老翅寒暑 | BigTall Blog">
 
-    <title>404 - 老翅寒暑 | BigTall Blog</title>
+    <title>About - 老翅寒暑 | BigTall Blog</title>
 
     <!-- Web App Manifest -->
     <link rel="manifest" href="/pwa/manifest.json">
@@ -31,7 +31,7 @@
     <link rel="shortcut icon" href="/img/favicon.ico">
 
     <!-- Canonical URL -->
-    <link rel="canonical" href="http://localhost:4000/404.html">
+    <link rel="canonical" href="http://localhost:4000/about/">
 
     <!-- Bootstrap Core CSS -->
     <link rel="stylesheet" href="/css/bootstrap.min.css">
@@ -206,10 +206,17 @@
 <style type="text/css">
     header.intro-header{
         position: relative;
-        background-image: url('/img/404-bg.jpg');
+        background-image: url('/img/home-bg-about.jpg');
         background: ;
     }
 
+    
+    header.intro-header .header-mask{
+        width: 100%;
+        height: 100%;
+        position: absolute;
+        background: rgba(0,0,0, 0.3);
+    }
     
 </style>
 
@@ -219,16 +226,16 @@
 
 
 
-<header class="intro-header" style="background-image: url('/img/404-bg.jpg')">
+<header class="intro-header" style="background-image: url('/img/home-bg-about.jpg')">
   <div class="header-mask"></div>
   <div class="container">
     <div class="row">
       <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
         
-        <div class="site-heading" id="tag-heading">
+        <div class="site-heading">
         
-          <h1>404</h1>
-          <span class="subheading">你来到了没有知识的荒原 :(</span>
+          <h1>About</h1>
+          <span class="subheading">欢迎来到老翅寒暑的个人介绍页面</span>
         </div>
       </div>
     </div>
@@ -237,9 +244,203 @@
 
 
 
+<!-- Main Content -->
+<div class="container">
+  <div class="row">
+    
+
+    <!-- USE SIDEBAR -->
+    <!-- PostList Container -->
+    <div class="col-lg-8 col-lg-offset-1 col-md-8 col-md-offset-1 col-sm-12
+      col-xs-12 postlist-container">
+                      <!-- Language Selector -->
+                <select class="sel-lang" onchange= "onLanChange(this.options[this.options.selectedIndex].value)">
+                    <option value="0" selected> 中文 | Chinese </option>
+                    <option value="1"> 英文 | English </option>
+                </select>
+
+
+
+<!-- Chinese Version -->
+<div class="zh post-container">
+    
+    
+<blockquote>
+  <p>To be, or not to be, that is the question.</p>
+</blockquote>
+
+<p>纠结与权衡，在生活中无处不在。软件架构设计中当亦如是。是否存在一套方法论，帮助我们入门的同时，也能给出一些指导，让软件架构设计工作变得容易一些？</p>
+
+<p>Hey，我是 <strong>老翅寒暑</strong>，一只工作了许多年的IT老鸟。如果你也喜欢软件设计，那么我们有得谈了！</p>
+
+<p>这是我的利用 <a href="https://pages.github.com/">GitHub Pages</a> 与 <a href="http://jekyll.com.cn/">Jekyll</a> 搭建的 个人博客。</p>
+
+<p>您还可以在<a href="https://github.com/jiangjianbo">GitHub主页</a> 与 <a href="http://bigtall.cnblogs.com">老翅寒暑</a>看到我的文章。</p>
+
+<p>如果有什么问题，欢迎提出探讨~</p>
+
+<h3 id="talks">Talks</h3>
+
+<ul>
+  <li><a href="https://github.com">GitHub</a></li>
+  <li><a href="https://pages.github.com/">GitHub Pages</a></li>
+  <li><a href="http://jekyll.com.cn/">jekyll</a></li>
+  <li><a href="http://huangxuan.me/">Hux</a></li>
+  <li><a href="https://qiubaiying.github.io">BY</a></li>
+  <li><a href="https://analytics.google.com/analytics">Google Analytics</a></li>
+</ul>
+
+
+</div>
+
+<!-- English Version -->
+<div class="en post-container">
+    
+    <h3 id="talks">Talks</h3>
+
+<ul>
+  <li><a href="https://github.com">GitHub</a></li>
+  <li><a href="http://jekyll.com.cn/">jekyll</a></li>
+  <li><a href="https://pages.github.com/">GitHub Pages</a></li>
+  <li><a href="https://qiubaiying.github.io">BY</a></li>
+</ul>
+
+</div>
+
+
+
+
+
+    </div>
+    <!-- Sidebar Container -->
+    <div class="col-lg-3 col-lg-offset-0 col-md-3 col-md-offset-0 col-sm-12
+      col-xs-12 sidebar-container">
+      <!-- Featured Tags -->
+      
+
+
+<section>
+    
+    <h5><a href="/archive/">FEATURED TAGS</a></h5>
+    <div class="tags">
+        
+        
+        
+        
+        
+        
+                <a data-sort="0007" 
+                    href="/archive/?tag=%E6%9E%B6%E6%9E%84"
+                    title="架构"
+                    rel="3">架构</a>
+        
+                <a data-sort="0007" 
+                    href="/archive/?tag=%E6%96%B9%E6%B3%95"
+                    title="方法"
+                    rel="3">方法</a>
+        
+                <a data-sort="0007" 
+                    href="/archive/?tag=%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1"
+                    title="面向对象"
+                    rel="3">面向对象</a>
+        
+                <a data-sort="0008" 
+                    href="/archive/?tag=%E4%B8%9A%E5%8A%A1"
+                    title="业务"
+                    rel="2">业务</a>
+        
+                <a data-sort="0008" 
+                    href="/archive/?tag=%E4%BC%81%E4%B8%9A%E7%AE%A1%E7%90%86"
+                    title="企业管理"
+                    rel="2">企业管理</a>
+        
+                <a data-sort="0008" 
+                    href="/archive/?tag=%E5%BB%BA%E6%A8%A1"
+                    title="建模"
+                    rel="2">建模</a>
+        
+                <a data-sort="0008" 
+                    href="/archive/?tag=%E8%BD%AF%E4%BB%B6%E8%AE%BE%E8%AE%A1"
+                    title="软件设计"
+                    rel="2">软件设计</a>
+    </div>
+</section>
+
+
+      <!-- Short About -->
+      <section class="visible-md visible-lg">
+  <hr>
+  <h5><a href="/about/">ABOUT ME</a></h5>
+  <div class="short-about">
+    
+    <img src="/img/about-bigtall-gentle.jpg" />
+    
+    
+    <p>To B, or not to B, that is the question.</p>
+    
+    <!-- SNS Link -->
+    
+
+
+<ul class="list-inline">
+
+
+  
+  
+  
+  
+  
+  
+  <li>
+    <a target="_blank" href="https://github.com/jiangjianbo">
+      <span class="fa-stack fa-lg">
+        <i class="fa fa-circle fa-stack-2x"></i>
+        <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+      </span>
+    </a>
+  </li>
+  
+  
+</ul>
+  </div>
+</section>
+
+      <!-- Friends Blog -->
+      
+<hr>
+<h5>FRIENDS</h5>
+<ul class="list-inline">
+  
+    
+  <li><a href="http://bigtall.cnblogs.com">博客园·老翅寒暑</a></li>
+    
+  
+    
+    <li>
+      <span>微信个人号·老翅寒暑</span>
+      <img src="/img/qrcode-bigtall.png" alt="微信个人号·老翅寒暑" />
+    </li>
+    
+  
+</ul>
+
+
+      <!-- Ads -->
+      <!-- first shot -->
+<!--
+     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-1234566" data-ad-slot="123456"
+     data-ad-format="auto" data-full-width-responsive="true"></ins>
 <script>
-	document.body.classList.add('page-fullscreen');
+     (adsbygoogle = window.adsbygoogle || []).push({});
 </script>
+-->
+    </div>
+    
+  </div>
+</div>
+
+
 
 
     <!-- Footer -->
@@ -361,7 +562,7 @@
     function generateCatalog(selector) {
 
         // interop with multilangual 
-        if ('' == 'true') {
+        if ('true' == 'true') {
             _containerSelector = 'div.post-container.active'
         } else {
             _containerSelector = 'div.post-container'
@@ -418,6 +619,58 @@
 
 
 <!-- Multi-Lingual -->
+
+<!-- Handle Language Change -->
+<script type="text/javascript">
+    // get nodes
+    var $zh = document.querySelector(".zh");
+    var $en = document.querySelector(".en");
+    var $select = document.querySelector("select");
+
+    // Changes at v1.8.1: include lang flag as a url query. This interop well with catalog hash anchors.
+    function getLang() { return new URLSearchParams(document.location.search).get("lang") }
+
+    function setLang(newLang) {
+        var params = new URLSearchParams(document.location.search)
+        params.set("lang", newLang)
+        document.location.search = params.toString()  // refresh.
+    }
+
+    // handle render
+    function _render() {
+        var lang = getLang()
+        // en
+        if (lang == "en") {
+            $select.selectedIndex = 1;
+            $en.style.display = "block";
+            $en.classList.add("active");
+            $zh.style.display = "none";
+            $zh.classList.remove("active");
+            // default to zh-cn
+        } else {
+            $select.selectedIndex = 0;
+            $zh.style.display = "block";
+            $zh.classList.add("active");
+            $en.style.display = "none";
+            $en.classList.remove("active");
+        }
+        // interop with catalog 
+        generateCatalog(".catalog-body");
+    }
+
+    // handle select change
+    function onLanChange(index) {
+        if (index == 0) {
+            lang = "zh"
+        } else {
+            lang = "en"
+        }
+        setLang(lang)
+    }
+
+    // init
+    _render();
+</script>
 
 
 <!-- Simple Jekyll Search -->

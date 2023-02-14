@@ -12,17 +12,30 @@
 
     <!-- Open Graph -->
     <meta property="og:title"
-        content="404 - 老翅寒暑 | BigTall Blog">
+        content="关于通用框架的一些想法 - 老翅寒暑 | BigTall Blog">
     
-    <meta property="og:type" content="website">
-    <meta property="og:description"
-        content="你来到了没有知识的荒原 :(">
+    <meta property="og:type" content="article">
+    <meta property="og:description" content="前言
+">
+    
+    <meta property="article:published_time" content=" 2019-05-27T00:00:00Z">
+    
+    
+    <meta property="article:author" content="BigTall">
+    
+    
+    <meta property="article:tag" content="架构">
+    
+    <meta property="article:tag" content="软件设计">
+    
+    <meta property="article:tag" content="面向对象">
+    
     
     <meta property="og:image" content="/img/about-bigtall-gentle.jpg">
-    <meta property="og:url" content="/404.html">
+    <meta property="og:url" content="/2019/05/27/About-Universal-Framework/">
     <meta property="og:site_name" content="老翅寒暑 | BigTall Blog">
 
-    <title>404 - 老翅寒暑 | BigTall Blog</title>
+    <title>关于通用框架的一些想法 - 老翅寒暑 | BigTall Blog</title>
 
     <!-- Web App Manifest -->
     <link rel="manifest" href="/pwa/manifest.json">
@@ -31,7 +44,7 @@
     <link rel="shortcut icon" href="/img/favicon.ico">
 
     <!-- Canonical URL -->
-    <link rel="canonical" href="http://localhost:4000/404.html">
+    <link rel="canonical" href="http://localhost:4000/2019/05/27/About-Universal-Framework/">
 
     <!-- Bootstrap Core CSS -->
     <link rel="stylesheet" href="/css/bootstrap.min.css">
@@ -199,14 +212,18 @@
   </div>
 </div>
 
-    <!-- Page Header -->
+    <!-- Image to hack wechat -->
+<!-- <img src="/img/icon_wechat.png" width="0" height="0"> -->
+<!-- <img src="/img/post-bg-sunset.jpg" width="0" height="0"> -->
+
+<!-- Post Header -->
 
 
 
 <style type="text/css">
     header.intro-header{
         position: relative;
-        background-image: url('/img/404-bg.jpg');
+        background-image: url('/img/post-bg-sunset.jpg');
         background: ;
     }
 
@@ -216,30 +233,265 @@
 
 
 
+<header class="intro-header" >
 
-
-
-<header class="intro-header" style="background-image: url('/img/404-bg.jpg')">
-  <div class="header-mask"></div>
-  <div class="container">
-    <div class="row">
-      <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
-        
-        <div class="site-heading" id="tag-heading">
-        
-          <h1>404</h1>
-          <span class="subheading">你来到了没有知识的荒原 :(</span>
+    <div class="header-mask"></div>
+    
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <div class="tags">
+                        
+                        <a class="tag" href="/archive/?tag=%E6%9E%B6%E6%9E%84" title="架构">架构</a>
+                        
+                        <a class="tag" href="/archive/?tag=%E8%BD%AF%E4%BB%B6%E8%AE%BE%E8%AE%A1" title="软件设计">软件设计</a>
+                        
+                        <a class="tag" href="/archive/?tag=%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1" title="面向对象">面向对象</a>
+                        
+                    </div>
+                    <h1>关于通用框架的一些想法</h1>
+                    
+                    <h2 class="subheading">框架系列</h2>
+                    <span class="meta">Posted by BigTall on May 27, 2019</span>
+                </div>
+            </div>
         </div>
-      </div>
     </div>
-  </div>
 </header>
 
 
 
+
+
+
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+    <!-- Post Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                <!-- Multi-Lingual -->
+                
+
+				<h2 id="前言">前言</h2>
+
+<p>前几天跟朋友谈起框架的事情，回顾了一下当前框架的发展，尤其是Spring Boot，已经把程序员的开发简化到了最初的一个 class 的形式了。这个也是我为什么喜欢领域驱动设计（DDD）的原因，真正回归了本源。回头看历史上的各种框架，从struts开始，到Tapestry、Wicket、SpringMVC，最后到Spring Boot，就是逐渐破坏面向对象（OO）的封装性，再慢慢回归到面向对象的历程。</p>
+
+<h2 id="通用框架的一些概念">通用框架的一些概念</h2>
+
+<p>我画了一个图，是应用程序的结构，貌似是Spring Cloud/Boot的结构，实际上并不仅仅如此。</p>
+
+<p><img src="/img/post-about-universal-framework-01.png" alt="应用程序结构" /></p>
+
+<p>我们从底向上分析这个图：</p>
+
+<ul>
+  <li>底层是操作系统，目前流行Docker，以及基于Docker的各种派生工具，比如Kubernates、Rancher等。但是微创新不能改变本质，也就是Docker带来了和纯OS之上部署完全不同的一种方式。但是依然属于“部署”的领域。在这个领域中，我们要思考的是拓扑结构、设备内存大小、磁盘空间、网络参数、文件句柄等。</li>
+  <li>操作系统之上，就是应用系统的各种部件。现在的应用系统，都是异构的，如数据库用Mysql、Oracle，缓存Redis，传输Kafka、MQ等等。这些异构的外部第三方程序需要和自己开发的应用进行集成。这是“系统集成”的领域。在这个领域中，我们要思考的是地址、端口、应用系统的配置参数等。</li>
+  <li>在自己开发的应用程序结构中，如果用java开发，则要基于Java运行时之上，结合外部的各种库，然后才能在其上开发自己的业务逻辑。这些业务逻辑代码通过编译打包功能，和外部库文件一起构成应用程序。这是“应用集成”的领域。在这个领域中，我们要在代码级别思考API、性能、参数、返回值、调用方式等。</li>
+  <li>最上层才是自己真正开发的应用逻辑部分。现在一切都回归到“对象”，程序员们只需要把业务逻辑写在class里就可以。但是写出这些代码之前，我们需要进行设计，思考各个class之间的关系，思考界面和后台逻辑的调用方式，思考界面的布局、交互等。这些才是开发真正要关注和要做的事情。</li>
+</ul>
+
+<p>把上图换一种画法，可以更加容易看懂。一层层象蛋壳一样的结构表示不同模块所处的依赖层面。现代软件框架已经发展成了一个庞大的体系，我们需要人工编程的部分，就像鸡蛋的蛋黄一样，核心但是只有一点点。</p>
+
+<p><img src="/img/post-about-universal-framework-02.png" alt="应用程序结构2" /></p>
+
+<p>那么，我们刚才已经说了：</p>
+
+<ol>
+  <li>基于现代框架的编程，已经回归且简单到只需要写一个class的地步了</li>
+  <li>在手工编写内容之外，都是集成工作</li>
+</ol>
+
+<p>通用架构也不过是如此。</p>
+
+<h2 id="关于通用框架的一些设想">关于通用框架的一些设想</h2>
+
+<p>目前框架方面的顶尖水平依然在Java界，以Spring Boot为代表。现在流行的Spring Cloud的核心依然是Spring Boot。记得2015年的时候，我用Dubbo给客户搭建了一个框架，后来在研究Spring Cloud的时候，发现两个的框架的思路基本一致，编程方法类似。那么，从开发者的角度，能否屏蔽这种差异？</p>
+
+<p>一旦屏蔽了框架实现的差异之后，开发者只需要用纯OO结构去实现自己的业务，框架根据Annotation自动决定加载和运行。也就是说，我们可以把“框架”归类到运行时（Runtime）部分，而不再需要把框架代码也打包到系统里。框架和代码之间的解耦，可以让应用程序的适应性更广：同一套代码，套用不同的框架，就具备了不同的特性，如高可靠、高吞吐量、离线处理等等。</p>
+
+<p>看起来很美！</p>
+
+
+                <hr style="visibility: hidden;">
+                <ul class="pager">
+                    
+                    <li class="previous">
+                        <a href="/2019/05/22/Model-for-Enterprise/" data-toggle="tooltip" data-placement="top" title="如何为企业建立数学模型">
+                        Previous<br>
+                        <span>如何为企业建立数学模型</span>
+                        </a>
+                    </li>
+                    
+                    
+                    <li class="next">
+                        <a href="/2019/05/28/Model-For-Cash-Flow/" data-toggle="tooltip" data-placement="top" title="企业要为现金流建模">
+                        Next<br>
+                        <span>企业要为现金流建模</span>
+                        </a>
+                    </li>
+                    
+                </ul>
+                <hr style="visibility: hidden;">
+
+                
+
+                
+            </div>  
+
+    <!-- Side Catalog Container -->
+        
+            <div class="
+                col-lg-2 col-lg-offset-0
+                visible-lg-block
+                sidebar-container
+                catalog-container">
+                <div class="side-catalog">
+                    <hr class="hidden-sm hidden-xs">
+                    <h5>
+                        <a class="catalog-toggle" href="#">CATALOG</a>
+                    </h5>
+                    <ul class="catalog-body"></ul>
+                </div>
+            </div>
+        
+
+    <!-- Sidebar Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+
+
+<section>
+    
+        <hr class="hidden-sm hidden-xs">
+    
+    <h5><a href="/archive/">FEATURED TAGS</a></h5>
+    <div class="tags">
+        
+        
+        
+        
+        
+        
+                <a data-sort="0007" 
+                    href="/archive/?tag=%E6%9E%B6%E6%9E%84"
+                    title="架构"
+                    rel="3">架构</a>
+        
+                <a data-sort="0007" 
+                    href="/archive/?tag=%E6%96%B9%E6%B3%95"
+                    title="方法"
+                    rel="3">方法</a>
+        
+                <a data-sort="0007" 
+                    href="/archive/?tag=%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1"
+                    title="面向对象"
+                    rel="3">面向对象</a>
+        
+                <a data-sort="0008" 
+                    href="/archive/?tag=%E4%B8%9A%E5%8A%A1"
+                    title="业务"
+                    rel="2">业务</a>
+        
+                <a data-sort="0008" 
+                    href="/archive/?tag=%E4%BC%81%E4%B8%9A%E7%AE%A1%E7%90%86"
+                    title="企业管理"
+                    rel="2">企业管理</a>
+        
+                <a data-sort="0008" 
+                    href="/archive/?tag=%E5%BB%BA%E6%A8%A1"
+                    title="建模"
+                    rel="2">建模</a>
+        
+                <a data-sort="0008" 
+                    href="/archive/?tag=%E8%BD%AF%E4%BB%B6%E8%AE%BE%E8%AE%A1"
+                    title="软件设计"
+                    rel="2">软件设计</a>
+    </div>
+</section>
+
+
+                <!-- Friends Blog -->
+                
+<hr>
+<h5>FRIENDS</h5>
+<ul class="list-inline">
+  
+    
+  <li><a href="http://bigtall.cnblogs.com">博客园·老翅寒暑</a></li>
+    
+  
+    
+    <li>
+      <span>微信个人号·老翅寒暑</span>
+      <img src="/img/qrcode-bigtall.png" alt="微信个人号·老翅寒暑" />
+    </li>
+    
+  
+</ul>
+
+            </div>
+        </div>
+    </div>
+</article>
+
+<!-- add support for mathjax by voleking-->
+
+
+
+
+
+
+
+
+
+<!-- async load function -->
 <script>
-	document.body.classList.add('page-fullscreen');
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
 </script>
+<!-- anchor-js, Doc:http://bryanbraun.github.io/anchorjs/ -->
+<script>
+    async("//cdnjs.cloudflare.com/ajax/libs/anchor-js/1.1.1/anchor.min.js",function(){
+        anchors.options = {
+          visible: 'hover',
+          placement: 'right',
+          // icon: '#'
+        };
+        anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
+    })
+</script>
+<style>
+    /* place left on bigger screen */
+    @media all and (min-width: 800px) {
+        .anchorjs-link{
+            position: absolute;
+            left: -0.75em;
+            font-size: 1.1em;
+            margin-top : -0.1em;
+        }
+    }
+</style>
+
 
 
     <!-- Footer -->

@@ -1,14 +1,83 @@
----
-layout: null
----
 [
-  {% for post in site.posts %}
+  
     {
-      "title"    : "{{ post.title | escape }}",
-      "subtitle" : "{{ post.subtitle | escape }}",
-      "tags"     : "{{ post.tags | join: ', ' }}",
-      "url"      : "{{ site.baseurl }}{{ post.url }}",
-      "date"     : "{{ post.date }}"
-    } {% unless forloop.last %},{% endunless %}
-  {% endfor %}
+      "title"    : "为Jekyll静态网站添加PlantUML插件",
+      "subtitle" : "不用Pages自动生成",
+      "tags"     : "Jekyll, 网站",
+      "url"      : "/2022/12/13/Jekyll-Site/",
+      "date"     : "2022-12-13 00:00:00 +0800"
+    } ,
+  
+    {
+      "title"    : "DDD聚合对象的引用的一种实现方式",
+      "subtitle" : "我的DDD实战",
+      "tags"     : "方法, 架构, DDD, MapStruct, 领域对象, 聚合根",
+      "url"      : "/2022/11/04/DDD-Object-Reference/",
+      "date"     : "2022-11-04 00:00:00 +0800"
+    } ,
+  
+    {
+      "title"    : "企业要为现金流建模",
+      "subtitle" : "关于建模的初步",
+      "tags"     : "方法, 建模, 业务",
+      "url"      : "/2019/05/28/Model-For-Cash-Flow/",
+      "date"     : "2019-05-28 00:00:00 +0800"
+    } ,
+  
+    {
+      "title"    : "关于通用框架的一些想法",
+      "subtitle" : "框架系列",
+      "tags"     : "架构, 软件设计, 面向对象",
+      "url"      : "/2019/05/27/About-Universal-Framework/",
+      "date"     : "2019-05-27 00:00:00 +0800"
+    } ,
+  
+    {
+      "title"    : "如何为企业建立数学模型",
+      "subtitle" : "关于建模的初步",
+      "tags"     : "方法, 建模, 业务",
+      "url"      : "/2019/05/22/Model-for-Enterprise/",
+      "date"     : "2019-05-22 00:00:00 +0800"
+    } ,
+  
+    {
+      "title"    : "面向对象和仿生学",
+      "subtitle" : "关于设计的概念、抽象与边界",
+      "tags"     : "思想, 面向对象, 设计",
+      "url"      : "/2019/05/13/OO-Bionics/",
+      "date"     : "2019-05-13 00:00:00 +0800"
+    } ,
+  
+    {
+      "title"    : "软件企业研发体系的建立",
+      "subtitle" : "系列概述",
+      "tags"     : "体系, 研发, 企业管理",
+      "url"      : "/2019/04/30/Software-Enterprise-Tech-Sys/",
+      "date"     : "2019-04-30 00:00:00 +0800"
+    } ,
+  
+    {
+      "title"    : "关于效率的随想",
+      "subtitle" : "提升企业效率的的关键在哪里",
+      "tags"     : "随想, 企业管理",
+      "url"      : "/2019/04/30/About-Efficient/",
+      "date"     : "2019-04-30 00:00:00 +0800"
+    } ,
+  
+    {
+      "title"    : "我的软件设计方法",
+      "subtitle" : "系列概述",
+      "tags"     : "架构, 软件设计, 面向对象",
+      "url"      : "/2019/03/31/Archetype-Preface/",
+      "date"     : "2019-03-31 00:00:00 +0800"
+    } ,
+  
+    {
+      "title"    : "我的第一篇文章",
+      "subtitle" : "测试",
+      "tags"     : "实验",
+      "url"      : "/2019/01/01/Hello/",
+      "date"     : "2019-01-01 00:00:00 +0800"
+    } 
+  
 ]

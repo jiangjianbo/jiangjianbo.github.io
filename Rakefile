@@ -38,9 +38,10 @@ task :post do
     post.puts "title: \"#{title.gsub(/-/,' ')}\""
     post.puts "subtitle: \"#{subtitle.gsub(/-/,' ')}\""
     post.puts "date: #{date}"
-    post.puts "author: \"Hux\""
-    post.puts "header-img: \"img/post-bg-2015.jpg\""
-    post.puts "tags: []"
+    post.puts "author: \"BigTall\""
+    post.puts "header-img: \"img/post-bg-sunset.jpg\""
+    post.puts "tags: "
+    post.puts "    - 文章"
     post.puts "---"
   end
 end # task :post
@@ -55,12 +56,14 @@ Dir['_rake/*.rake'].each { |r| load r }
 
 # copy from https://www.sitepoint.com/jekyll-plugins-github/
 # 
-GH_PAGES_DIR = "blog_site"
+#GH_PAGES_DIR = "blog-site"
+GH_PAGES_DIR = "gh-pages"
 
 desc "Build Jekyll site and copy files"
 task :build do
   system "jekyll build"
   system "rm -r ../#{GH_PAGES_DIR}/*" unless Dir['../#{GH_PAGES_DIR}/*'].empty?
   system "cp -r _site/* ../#{GH_PAGES_DIR}/"
+  system "echo nojekyll > ../#{GH_PAGES_DIR}/.nojekyll"
 end
 
