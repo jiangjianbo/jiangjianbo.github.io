@@ -115,10 +115,13 @@ jekyll-spaceship:
 这里也要吐槽 `jekyll-spaceship`，上面这段原文里的 `@startuml` 这种标注直接给我解析成了它要识别的指令，加任何折衷都不行。
 这也是最终被我抛弃的原因之一。
 
+另外一个原因我不用这个插件是：所有生成的plantuml图片竟然是引用[](plantuml.com)提供的免费图片生成的链接。
+我说你一个页面生成器，不是一次性生成个图片嵌入到网页里，每次访问去耗费人家plantuml的流量，是不是有问题啊？损人不利己啊！
+
 4. 启动命令行，在git工程目录运行命令 `bundle install` 下载并安装插件。
 
 如果运行的时候出现类似错误 `Warning: the fonts "Times" and "Times" are not available for the Java logical font`，表示电脑中缺少字体。
-尤其是Mac电脑，请到 [https://www.freebestfonts.com/timr45w-font] 下载并安装字体。
+尤其是Mac电脑，请到 [](https://www.freebestfonts.com/timr45w-font) 下载并安装字体。
 
 ### 使用插件
 
@@ -149,7 +152,7 @@ git push origin gh-pages
 Github Pages默认假设 `gh-pages` 分支中存放的是 jekyll 格式的源码，会自动构建之。为了阻止自动构建，需要在 `gh-pages` 分支的根目录中
 存放一个 `.nojekyll` 文件。
 
-为了确保工作的自动化，我在磁盘上放置了两个文件夹，一个是 `blog-master` 存放源代码，并和 `master`分支关联，一个是 `blog-site` 用来存放输出的静态网页，
+为了确保工作的自动化，我在磁盘上放置了两个文件夹，一个是 `blog-master` 存放源代码，并和 `master`分支关联，一个是 `gh-pages` 用来存放输出的静态网页，
 并和 `gh-pages` 分支关联。这样两个可以互不干扰。
 
 ```plantuml
@@ -182,16 +185,26 @@ github_pages -right-> [github.io] : 推送
 @enduml
 ```
 
+简而言之，就是github里用两个分支，对应磁盘上两个不同的目录，一个目录`blog-master`放博客源代码，一个目录`gh-pages`放生成的页面。各自独立提交就ok了。
+
+### 创建新文章
+
+初学者对创建新文章的格式会把握不好，所以可以用命令行增加新文章。
+
+```bash
+rake post title="My first blog"`
+```
+
 ### 自动复制
 
-jekyll 使用指令 `bundle exec jekyll build` 或 `bundle exec jekyll serve` 处理页面代码之后的静态内容全部都放在 `_site` 目录下，需要手工复制到 `blog-site` 目录，所以我们需要自动化脚本来处理这些事情。
+jekyll 使用指令 `bundle exec jekyll build` 或 `bundle exec jekyll serve` 处理页面代码之后的静态内容全部都放在 `_site` 目录下，需要手工复制到 `gh-pages` 目录，所以我们需要自动化脚本来处理这些事情。
 
 编辑根目录下的 `Rakefile` 在尾部增加：
 
 ```ruby
 # copy from https://www.sitepoint.com/jekyll-plugins-github/
 # 
-GH_PAGES_DIR = "blog-site"
+GH_PAGES_DIR = "gh-pages"
 
 desc "Build Jekyll site and copy files"
 task :build do
@@ -199,6 +212,15 @@ task :build do
   system "rm -r ../#{GH_PAGES_DIR}/*" unless Dir['../#{GH_PAGES_DIR}/*'].empty?
   system "cp -r _site/* ../#{GH_PAGES_DIR}/"
   system "echo nojekyll > ../#{GH_PAGES_DIR}/.nojekyll"
+end
+
+desc "commit Jekyll site and push to github repository"
+task :publish do
+  title = ENV['TITLE'] || "at #{Date.today}"
+
+  system "cd ../#{GH_PAGES_DIR}"
+  system "git commit -m \"publish #{title}\""
+  system "git push origin gh-pages"
 end
 ```
 
@@ -218,9 +240,12 @@ exclude:
   ]
 ```
 
+等你的文章写完了，就到命令行，运行 `rake build` 命令。如果预览觉得可以，就运行 `rake publish title="加了文章"` 提交到 github。
+记得别忘记源代码也手动去提交，脚本不管源代码的自动提交。
+
 ### 网站预览
 
-静态内容在 `blog-site` 目录下，并没有任何支持浏览器访问浏览的功能。为了把这个目录中的内容可网络访问，可以在 `blog-site` 目录下启动命令行运行
+静态内容在 `gh-pages` 目录下，并没有任何支持浏览器访问浏览的功能。为了把这个目录中的内容可网络访问，可以在 `gh-pages` 目录下启动命令行运行
 
 ```bash
 python3 -m http.server
@@ -230,9 +255,8 @@ python3 -m http.server
 
 ## 自动化辅助功能
 
-rake post title="My first blog"
-
-rake build
+* 自动更新 `gh-pages` 目录： `rake build`
+* 自动提交 `gh-pages` 目录到github中： `rake publish title="add article MyFirstBlog"`
 
 ## 参考文献
 

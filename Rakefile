@@ -67,3 +67,11 @@ task :build do
   system "echo nojekyll > ../#{GH_PAGES_DIR}/.nojekyll"
 end
 
+desc "commit Jekyll site and push to github repository"
+task :publish do
+  title = ENV['TITLE'] || "at #{Date.today}"
+
+  system "echo commit and push to gh-pages"
+  system "cd ../#{GH_PAGES_DIR} && git commit -a -m \"publish #{title}\""
+  system "cd ../#{GH_PAGES_DIR} && git push origin gh-pages"
+end
