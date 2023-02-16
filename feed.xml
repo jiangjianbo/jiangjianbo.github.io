@@ -3,11 +3,181 @@
   <channel>
     <title>老翅寒暑</title>
     <description>一个老鸟的自白</description>
-    <link>http://jiangjianbo.github.io/</link>
-    <atom:link href="http://jiangjianbo.github.io/feed.xml" rel="self" type="application/rss+xml" />
-    <pubDate>Wed, 15 Feb 2023 00:32:37 +0800</pubDate>
-    <lastBuildDate>Wed, 15 Feb 2023 00:32:37 +0800</lastBuildDate>
+    <link>http://localhost:4000/</link>
+    <atom:link href="http://localhost:4000/feed.xml" rel="self" type="application/rss+xml" />
+    <pubDate>Fri, 17 Feb 2023 00:44:13 +0800</pubDate>
+    <lastBuildDate>Fri, 17 Feb 2023 00:44:13 +0800</lastBuildDate>
     <generator>Jekyll v4.3.1</generator>
+    
+      <item>
+        <title>关于低代码和无代码</title>
+        <description>&lt;h2 id=&quot;前言&quot;&gt;前言&lt;/h2&gt;
+
+&lt;p&gt;2021年的时候，刮起了一阵”低代码”和”无代码”的风，结果猪没见吹起来，风却早早停了。&lt;/p&gt;
+
+&lt;p&gt;从我的职业生涯中遇到了很多的低代码的构想和实现，通常他们的想法非常朴素：写代码写烦了！或者是觉得增删改查代码太没有价值，又太有规律，于是就想着用工具解决劳动重复的问题。&lt;/p&gt;
+
+&lt;p&gt;如果你也是这样觉得，首先还是要表扬：你确实是一个程序员，具备非常好的发现问题并解决问题的思维。如果你已经开始动手了，那么恭喜你，已经进坑了。&lt;/p&gt;
+
+&lt;p&gt;文章先说结论：&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;没有想清楚之前，不要做低代码，更不要做无代码。&lt;/li&gt;
+  &lt;li&gt;投资者如果想正经投资获取回报，谨慎投资低代码，不要投资无代码。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;故事&quot;&gt;故事&lt;/h2&gt;
+
+&lt;p&gt;我们先从一个故事说起，很早之前还是delphi时代，那时候的最新操作系统是Windows 2000，大家最熟悉的XP还没有出来。我的一群做基金核心系统的同事们代码写烦了，
+于是做了一个快速代码生成器，通过简单的配置和勾选，可以快速生成复杂的界面和增删改查功能。80%的功能可以很快出来，无论是开发还是客户都很高兴。&lt;/p&gt;
+
+&lt;p&gt;但是问题在于剩下的20%，这剩下的部分通常是某个复杂的业务界面，或者是系统的算法核心，并且和前后端都可能关联。
+大量的精力都投入在了20%的工作上，甚至需要跳出原有的框架，用一些技巧去满足功能需求。
+一句话，就是痛苦指数相当高。前面剩下来的时间，可能还不够后面折腾的。让我印象深刻的是客户对我同事所在项目组工作的评价：&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;你们啊！把Delphi的优点做成了缺点！&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;所有的低代码和无代码平台都有这个问题。工作量的严重不均衡：80%增删改查爽的要死，20%的特殊功能折腾得想死。&lt;/p&gt;
+
+&lt;p&gt;我的老东家K有自己的低代码开发平台，并且围绕这个做成了一个生态体系，集团开发核心产品，外围供应商负责实施和二次开发。
+但这个低代码的生态是一个围城，防止了外人的侵入，也把自己困在里面。我问过几个好朋友这个低代码平台对业务需求的满足率，大概在50%左右，也就是一半业务开发很快，一半业务要在这个体系之外编写代码。&lt;/p&gt;
+
+&lt;p&gt;我在老东家D的一个同事，独立开发了一个低代码平台。这个低代码平台的特点是用了一些”算子”概念去扩展，缺点是依然是前端和逻辑绑定太死。&lt;/p&gt;
+
+&lt;p&gt;这几个例子可以看出，所有的低代码平台最大的问题就是”不灵活”。&lt;/p&gt;
+
+&lt;p&gt;另外的一个严重问题是”没有普适性”。一个开发人员如果学习了某个X代码平台的开发技术，就意味着他用X代码平台的期间里，和开放架构是脱离的。
+直白了说，这个开发人员换工作的时候会发现自己已经和行业流行技术栈脱节了。&lt;/p&gt;
+
+&lt;p&gt;低代码和无代码成了员工发展的绊脚石。&lt;/p&gt;
+
+&lt;h2 id=&quot;本质&quot;&gt;本质&lt;/h2&gt;
+
+&lt;h3 id=&quot;低代码&quot;&gt;低代码&lt;/h3&gt;
+
+&lt;p&gt;低代码等价于DSL（Domain Specific Language，领域专用语言），马丁福勒（Martin Fowler）说DSL最重要的特征就是：&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;有限表达力&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;这是和通用语言相比最显著的特征，DSL是针对专门某个特定领域的编程语言。也就是意味着，DSL通常需要一个业务化的基础平台，并且为这个基础平台提供胶水代码。
+而我们所谓的低代码，充其量就是给DSL加了一个可视化的界面。&lt;/p&gt;
+
+&lt;h3 id=&quot;无代码&quot;&gt;无代码&lt;/h3&gt;
+
+&lt;p&gt;无代码和低代码虽然只有一字之差，但是要求是天壤之别。无代码实际就是对标通用编程语言的，它要实现的是”图灵完备性”。当前市面上除了Mendix和有限几个竞品之外，
+几乎所有自称无代码的产品，都实际上是低代码。
+信通院2022年在整理低代码和无代码平台的标准，我在各种大佬参加的研讨会上斗胆提问了一下，发现没人意识到无代码需要和图灵完备挂钩。&lt;/p&gt;
+
+&lt;p&gt;无论是低代码，还是无代码，最终需要的都是元数据的描述能力。&lt;/p&gt;
+
+&lt;h2 id=&quot;元数据&quot;&gt;元数据&lt;/h2&gt;
+
+&lt;p&gt;元数据的定义是”描述数据的数据”，通俗点讲，SQL里的DDL定义的就是元数据。&lt;/p&gt;
+
+&lt;div class=&quot;language-sql highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;table class=&quot;rouge-table&quot;&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class=&quot;rouge-gutter gl&quot;&gt;&lt;pre class=&quot;lineno&quot;&gt;1
+2
+3
+4
+&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;rouge-code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;k&quot;&gt;CREATE&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;TABLE&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;table001&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;id&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;INT&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;title&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;VARCHAR&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;现在元数据的描述能力还相当原始，大部分人对元数据的认知都集中在数据库建表层面。实际上，我看到目前最高的元数据是OMG组织的CWM（Common Warehouse Metamodel）
+规范定义。除了字段定义之外，还有数据变换。&lt;/p&gt;
+
+&lt;p&gt;低代码和无代码的元数据更复杂，实际上考验的是设计者对应用程序构成的理解。目前的这些X代码产品，通常会抽象出来的应用程序元素有：&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;页面：就是对应一个一个可以看到的页面&lt;/li&gt;
+  &lt;li&gt;控件/组件：页面上的各种元素的抽象，基本都会支持绑定一些数据&lt;/li&gt;
+  &lt;li&gt;事件/调用：调用后台API的消息，也有扩展成可以调用非后台API&lt;/li&gt;
+  &lt;li&gt;算法：独立的算法或业务逻辑。通常会支持第三方定义&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;其他还有很多产品特有的概念和术语，然后把这一切糅合起来，就以为可以描述一个应用程序了。我很怀疑他们是否真的收集到了足够的用例，并对他们设计的架构做过充分的验证。&lt;/p&gt;
+
+&lt;p&gt;现在元数据最大的问题就是&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;描述能力不足&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h2 id=&quot;展望&quot;&gt;展望&lt;/h2&gt;
+
+&lt;p&gt;对于西门子的Mendix无代码平台来说，最好的一个广告就是&lt;a href=&quot;https://zhuanlan.zhihu.com/p/337213952&quot;&gt;特斯拉使用Mendix&lt;/a&gt;用4个月编写完成了一个ERP。
+看到这个新闻的时候我只想说一句话&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;那是因为Elon Mask不是中国人，换个中国甲方试试！？&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;国内的几个大厂的低代码/无代码平台，做一些促销表单应该是没问题的。但是真正要达到替代应用程序的境界，难！&lt;/p&gt;
+
+&lt;p&gt;如何判断一个X代码平台是否有足够的能力？只需要去看他们的数据结构定义功能，只有元数据能力上来了，才有提升的机会。否则，只是靠几个牛人拍脑袋想是没用的。
+他们至少需要一个博士，去证明元数据模型的图灵完备性，否则做啥无代码？&lt;/p&gt;
+
+&lt;p&gt;这才是要点。&lt;/p&gt;
+
+&lt;h2 id=&quot;附加&quot;&gt;附加&lt;/h2&gt;
+
+&lt;p&gt;目前加速代码编写的工具不少，但是我只用一个工具&lt;a href=&quot;https://www.jhipster.tech&quot;&gt;JHipster&lt;/a&gt;，用它生成代码，然后自己改。这个又是一个很好的故事，我们下次聊。&lt;/p&gt;
+
+</description>
+        <pubDate>Wed, 15 Feb 2023 00:00:00 +0800</pubDate>
+        <link>http://localhost:4000/2023/02/15/about-low-code/</link>
+        <guid isPermaLink="true">http://localhost:4000/2023/02/15/about-low-code/</guid>
+        
+        <category>心得</category>
+        
+        <category>低代码</category>
+        
+        <category>元数据</category>
+        
+        
+      </item>
+    
+      <item>
+        <title>关于上网看文章</title>
+        <description>&lt;h2 id=&quot;前言&quot;&gt;前言&lt;/h2&gt;
+
+&lt;p&gt;以前刷手机的时候还能看到很多有趣的文章，但是现在刷手机的话，明显发现信息不足，尤其是公众号和朋友圈。
+到底是后疫情期间大家在报复性忙碌，还是后阅读时代的文字沙漠正在形成？&lt;/p&gt;
+
+&lt;p&gt;可能都不是，也可能是。&lt;/p&gt;
+
+&lt;p&gt;我一直认为阅读是一个不简单的活。看国外有很多小孩有”阅读障碍”，但是国内倒是很少听说这个词。但是从统计规律我们可以推断，这边的比例也应该相似。
+百度查了一下大约20%左右，其实是很高的一个比例，以下内容摘自&lt;a href=&quot;https://baijiahao.baidu.com/s?id=1698099032255683374&quot;&gt;看不懂、写不出、读不了，孩子总和书较劲，可能是患了阅读障碍症&lt;/a&gt;。&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;有数据显示，人类群体中患有阅读障碍的比例大约是20%。阅读障碍也已经被划分为学习障碍的最主要类型，占到所有被诊断为学习障碍儿童的70%以上。
+其中，英语国家中有阅读困难的儿童高达10%～30%；汉语国家的儿童中患有阅读障碍的人则在3%～5%左右。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;但是我们粗放式的教育体系可能直接把这类孩子归结为”差生”，然后早早地淘汰下去了。毕竟，重点在批量生产的教育体系并不知道如何教有”阅读障碍”的孩子。&lt;/p&gt;
+
+&lt;p&gt;这个也是短视频逐渐兴起的原因之一：受众更广，大脑思考更少，参与器官更多当然也更刺激。&lt;/p&gt;
+
+&lt;p&gt;所以阅读是一个高成本的活儿，被低成本的活儿抢了也是一种必然。&lt;/p&gt;
+
+&lt;p&gt;但是阅读更是一个高效率的信息获取方法，其获取效率比音频视频要高很多。&lt;/p&gt;
+
+</description>
+        <pubDate>Wed, 15 Feb 2023 00:00:00 +0800</pubDate>
+        <link>http://localhost:4000/2023/02/15/About-Read-Articles/</link>
+        <guid isPermaLink="true">http://localhost:4000/2023/02/15/About-Read-Articles/</guid>
+        
+        <category>心得</category>
+        
+        <category>技巧</category>
+        
+        
+      </item>
     
       <item>
         <title>为Jekyll静态网站添加PlantUML插件</title>
@@ -316,8 +486,8 @@ link github_pages to github.io--&gt;&lt;g id=&apos;link_github_pages_github.io&a
 &lt;/ol&gt;
 </description>
         <pubDate>Tue, 13 Dec 2022 00:00:00 +0800</pubDate>
-        <link>http://jiangjianbo.github.io/2022/12/13/Jekyll-Site/</link>
-        <guid isPermaLink="true">http://jiangjianbo.github.io/2022/12/13/Jekyll-Site/</guid>
+        <link>http://localhost:4000/2022/12/13/Jekyll-Site/</link>
+        <guid isPermaLink="true">http://localhost:4000/2022/12/13/Jekyll-Site/</guid>
         
         <category>Jekyll</category>
         
@@ -434,8 +604,8 @@ link jpa_ref to id_ref--&gt;&lt;g id=&apos;link_jpa_ref_id_ref&apos;&gt;&lt;path
 
 </description>
         <pubDate>Fri, 04 Nov 2022 00:00:00 +0800</pubDate>
-        <link>http://jiangjianbo.github.io/2022/11/04/DDD-Object-Reference/</link>
-        <guid isPermaLink="true">http://jiangjianbo.github.io/2022/11/04/DDD-Object-Reference/</guid>
+        <link>http://localhost:4000/2022/11/04/DDD-Object-Reference/</link>
+        <guid isPermaLink="true">http://localhost:4000/2022/11/04/DDD-Object-Reference/</guid>
         
         <category>方法</category>
         
@@ -504,8 +674,8 @@ link jpa_ref to id_ref--&gt;&lt;g id=&apos;link_jpa_ref_id_ref&apos;&gt;&lt;path
 
 </description>
         <pubDate>Tue, 28 May 2019 00:00:00 +0800</pubDate>
-        <link>http://jiangjianbo.github.io/2019/05/28/Model-For-Cash-Flow/</link>
-        <guid isPermaLink="true">http://jiangjianbo.github.io/2019/05/28/Model-For-Cash-Flow/</guid>
+        <link>http://localhost:4000/2019/05/28/Model-For-Cash-Flow/</link>
+        <guid isPermaLink="true">http://localhost:4000/2019/05/28/Model-For-Cash-Flow/</guid>
         
         <category>方法</category>
         
@@ -559,8 +729,8 @@ link jpa_ref to id_ref--&gt;&lt;g id=&apos;link_jpa_ref_id_ref&apos;&gt;&lt;path
 &lt;p&gt;看起来很美！&lt;/p&gt;
 </description>
         <pubDate>Mon, 27 May 2019 00:00:00 +0800</pubDate>
-        <link>http://jiangjianbo.github.io/2019/05/27/About-Universal-Framework/</link>
-        <guid isPermaLink="true">http://jiangjianbo.github.io/2019/05/27/About-Universal-Framework/</guid>
+        <link>http://localhost:4000/2019/05/27/About-Universal-Framework/</link>
+        <guid isPermaLink="true">http://localhost:4000/2019/05/27/About-Universal-Framework/</guid>
         
         <category>架构</category>
         
@@ -655,8 +825,8 @@ link jpa_ref to id_ref--&gt;&lt;g id=&apos;link_jpa_ref_id_ref&apos;&gt;&lt;path
 &lt;p&gt;当然，正事是对这些数据进行探索，比如每个月的成单率变化规律，将这个规律总结出算法，再变成代码，实现出一个预测成单率的软件功能。&lt;/p&gt;
 </description>
         <pubDate>Wed, 22 May 2019 00:00:00 +0800</pubDate>
-        <link>http://jiangjianbo.github.io/2019/05/22/Model-for-Enterprise/</link>
-        <guid isPermaLink="true">http://jiangjianbo.github.io/2019/05/22/Model-for-Enterprise/</guid>
+        <link>http://localhost:4000/2019/05/22/Model-for-Enterprise/</link>
+        <guid isPermaLink="true">http://localhost:4000/2019/05/22/Model-for-Enterprise/</guid>
         
         <category>方法</category>
         
@@ -691,8 +861,8 @@ link jpa_ref to id_ref--&gt;&lt;g id=&apos;link_jpa_ref_id_ref&apos;&gt;&lt;path
 
 </description>
         <pubDate>Mon, 13 May 2019 00:00:00 +0800</pubDate>
-        <link>http://jiangjianbo.github.io/2019/05/13/OO-Bionics/</link>
-        <guid isPermaLink="true">http://jiangjianbo.github.io/2019/05/13/OO-Bionics/</guid>
+        <link>http://localhost:4000/2019/05/13/OO-Bionics/</link>
+        <guid isPermaLink="true">http://localhost:4000/2019/05/13/OO-Bionics/</guid>
         
         <category>思想</category>
         
@@ -722,8 +892,8 @@ link jpa_ref to id_ref--&gt;&lt;g id=&apos;link_jpa_ref_id_ref&apos;&gt;&lt;path
 
 </description>
         <pubDate>Tue, 30 Apr 2019 00:00:00 +0800</pubDate>
-        <link>http://jiangjianbo.github.io/2019/04/30/Software-Enterprise-Tech-Sys/</link>
-        <guid isPermaLink="true">http://jiangjianbo.github.io/2019/04/30/Software-Enterprise-Tech-Sys/</guid>
+        <link>http://localhost:4000/2019/04/30/Software-Enterprise-Tech-Sys/</link>
+        <guid isPermaLink="true">http://localhost:4000/2019/04/30/Software-Enterprise-Tech-Sys/</guid>
         
         <category>体系</category>
         
@@ -743,47 +913,12 @@ link jpa_ref to id_ref--&gt;&lt;g id=&apos;link_jpa_ref_id_ref&apos;&gt;&lt;path
 &lt;a href=&quot;https://www.zhihu.com/question/21621731&quot;&gt;为什么中国人均GDP在世界上的排名如此靠后&lt;/a&gt;&lt;/p&gt;
 </description>
         <pubDate>Tue, 30 Apr 2019 00:00:00 +0800</pubDate>
-        <link>http://jiangjianbo.github.io/2019/04/30/About-Efficient/</link>
-        <guid isPermaLink="true">http://jiangjianbo.github.io/2019/04/30/About-Efficient/</guid>
+        <link>http://localhost:4000/2019/04/30/About-Efficient/</link>
+        <guid isPermaLink="true">http://localhost:4000/2019/04/30/About-Efficient/</guid>
         
         <category>随想</category>
         
         <category>企业管理</category>
-        
-        
-      </item>
-    
-      <item>
-        <title>我的软件设计方法</title>
-        <description>&lt;h1 id=&quot;前言&quot;&gt;前言&lt;/h1&gt;
-
-&lt;p&gt;第一篇文章&lt;/p&gt;
-</description>
-        <pubDate>Sun, 31 Mar 2019 00:00:00 +0800</pubDate>
-        <link>http://jiangjianbo.github.io/2019/03/31/Archetype-Preface/</link>
-        <guid isPermaLink="true">http://jiangjianbo.github.io/2019/03/31/Archetype-Preface/</guid>
-        
-        <category>架构</category>
-        
-        <category>软件设计</category>
-        
-        <category>面向对象</category>
-        
-        
-      </item>
-    
-      <item>
-        <title>我的第一篇文章</title>
-        <description>&lt;h1 id=&quot;前言&quot;&gt;前言&lt;/h1&gt;
-
-&lt;p&gt;第一篇文章
-preface&lt;/p&gt;
-</description>
-        <pubDate>Tue, 01 Jan 2019 00:00:00 +0800</pubDate>
-        <link>http://jiangjianbo.github.io/2019/01/01/Hello/</link>
-        <guid isPermaLink="true">http://jiangjianbo.github.io/2019/01/01/Hello/</guid>
-        
-        <category>实验</category>
         
         
       </item>
