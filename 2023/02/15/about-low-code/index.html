@@ -1,0 +1,818 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <meta name="description" content="一个老鸟的自白">
+    <meta name="keywords" content="BigTall, BigTall Blog, 老翅寒暑, archetype, software design, OOA, OOD">
+    <meta name="theme-color" content="#000000">
+
+    <!-- Open Graph -->
+    <meta property="og:title"
+        content="关于低代码和无代码 - 老翅寒暑 | BigTall Blog">
+    
+    <meta property="og:type" content="article">
+    <meta property="og:description" content="前言
+">
+    
+    <meta property="article:published_time" content=" 2023-02-15T00:00:00Z">
+    
+    
+    <meta property="article:author" content="BigTall">
+    
+    
+    <meta property="article:tag" content="心得">
+    
+    <meta property="article:tag" content="低代码">
+    
+    <meta property="article:tag" content="元数据">
+    
+    
+    <meta property="og:image" content="/img/about-bigtall-gentle.jpg">
+    <meta property="og:url" content="/2023/02/15/about-low-code/">
+    <meta property="og:site_name" content="老翅寒暑 | BigTall Blog">
+
+    <title>关于低代码和无代码 - 老翅寒暑 | BigTall Blog</title>
+
+    <!-- Web App Manifest -->
+    <link rel="manifest" href="/pwa/manifest.json">
+
+    <!-- Favicon -->
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <!-- Canonical URL -->
+    <link rel="canonical" href="http://localhost:4000/2023/02/15/about-low-code/">
+
+    <!-- Bootstrap Core CSS -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/hux-blog.min.css">
+
+    <!-- Custom Fonts -->
+    <!-- <link href="http://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
+    <!-- Hux change font-awesome CDN to qiniu -->
+    <link href="/css/font-awesome.min.css" rel="stylesheet"
+        type="text/css">
+
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- ga & ba script hoook -->
+    <script></script>
+
+
+</head>
+
+
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
+
+    <!-- Navigation -->
+
+    <nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+        
+        <div class="container-fluid">
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header page-scroll">
+                <button type="button" class="navbar-toggle">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="/">老翅寒暑</a>
+            </div>
+
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div id="huxblog_navbar">
+                <div class="navbar-collapse">
+                    <ul class="nav navbar-nav navbar-right">
+                        <li>
+                            <a href="/">Home</a>
+                        </li>
+                        
+                        
+                        
+                        
+                        <li>
+                            <a href="/about/">About</a>
+                        </li>
+                        
+                        
+                        
+                        <li>
+                            <a href="/archive/">Archive</a>
+                        </li>
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        <li>
+                            <a href="/tags/">Tags</a>
+                        </li>
+                        
+                        
+                        
+                        
+                        <li class="search-icon">
+                            <a href="javascript:void(0)">
+                                <i class="fa fa-search"></i>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <!-- /.navbar-collapse -->
+        </div>
+        <!-- /.container -->
+    </nav>
+
+    <script>
+        // Drop Bootstarp low-performance Navbar
+        // Use customize navbar with high-quality material design animation
+        // in high-perf jank-free CSS3 implementation
+        var $body = document.body;
+        var $toggle = document.querySelector('.navbar-toggle');
+        var $navbar = document.querySelector('#huxblog_navbar');
+        var $collapse = document.querySelector('.navbar-collapse');
+
+        var __HuxNav__ = {
+            close: function () {
+                $navbar.className = " ";
+                // wait until animation end.
+                setTimeout(function () {
+                    // prevent frequently toggle
+                    if ($navbar.className.indexOf('in') < 0) {
+                        $collapse.style.height = "0px"
+                    }
+                }, 400)
+            },
+            open: function () {
+                $collapse.style.height = "auto"
+                $navbar.className += " in";
+            }
+        }
+
+        // Bind Event
+        $toggle.addEventListener('click', function (e) {
+            if ($navbar.className.indexOf('in') > 0) {
+                __HuxNav__.close()
+            } else {
+                __HuxNav__.open()
+            }
+        })
+
+        /**
+         * Since Fastclick is used to delegate 'touchstart' globally
+         * to hack 300ms delay in iOS by performing a fake 'click',
+         * Using 'e.stopPropagation' to stop 'touchstart' event from 
+         * $toggle/$collapse will break global delegation.
+         * 
+         * Instead, we use a 'e.target' filter to prevent handler
+         * added to document close HuxNav.  
+         *
+         * Also, we use 'click' instead of 'touchstart' as compromise
+         */
+        document.addEventListener('click', function (e) {
+            if (e.target == $toggle) return;
+            if (e.target.className == 'icon-bar') return;
+            __HuxNav__.close();
+        })
+    </script>
+    <!-- Search -->
+<div class="search-page">
+  <div class="search-icon-close-container">
+    <span class="search-icon-close">
+      <i class="fa fa-chevron-down"></i>
+    </span>
+  </div>
+  <div class="search-main container">
+    <div class="row">
+      <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+        <form></form>
+        <input type="text" id="search-input" placeholder="$ grep...">
+        </form>
+        <div id="search-results" class="mini-post-list"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    <!-- Image to hack wechat -->
+<!-- <img src="/img/icon_wechat.png" width="0" height="0"> -->
+<!-- <img src="/img/post-bg-sunset.jpg" width="0" height="0"> -->
+
+<!-- Post Header -->
+
+
+
+<style type="text/css">
+    header.intro-header{
+        position: relative;
+        background-image: url('/img/post-bg-sunset.jpg');
+        background: ;
+    }
+
+    
+</style>
+
+
+
+
+<header class="intro-header" >
+
+    <div class="header-mask"></div>
+    
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <div class="tags">
+                        
+                        <a class="tag" href="/archive/?tag=%E5%BF%83%E5%BE%97" title="心得">心得</a>
+                        
+                        <a class="tag" href="/archive/?tag=%E4%BD%8E%E4%BB%A3%E7%A0%81" title="低代码">低代码</a>
+                        
+                        <a class="tag" href="/archive/?tag=%E5%85%83%E6%95%B0%E6%8D%AE" title="元数据">元数据</a>
+                        
+                    </div>
+                    <h1>关于低代码和无代码</h1>
+                    
+                    <h2 class="subheading">喧嚣背后的致命问题</h2>
+                    <span class="meta">Posted by BigTall on February 15, 2023</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+
+
+
+
+
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+    <!-- Post Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+                <!-- Multi-Lingual -->
+                
+
+				<h2 id="前言">前言</h2>
+
+<p>2021年的时候，刮起了一阵”低代码”和”无代码”的风，结果猪没见吹起来，风却早早停了。</p>
+
+<p>从我的职业生涯中遇到了很多的低代码的构想和实现，通常他们的想法非常朴素：写代码写烦了！或者是觉得增删改查代码太没有价值，又太有规律，于是就想着用工具解决劳动重复的问题。</p>
+
+<p>如果你也是这样觉得，首先还是要表扬：你确实是一个程序员，具备非常好的发现问题并解决问题的思维。如果你已经开始动手了，那么恭喜你，已经进坑了。</p>
+
+<p>文章先说结论：</p>
+
+<ul>
+  <li>没有想清楚之前，不要做低代码，更不要做无代码。</li>
+  <li>投资者如果想正经投资获取回报，谨慎投资低代码，不要投资无代码。</li>
+</ul>
+
+<h2 id="故事">故事</h2>
+
+<p>我们先从一个故事说起，很早之前还是delphi时代，那时候的最新操作系统是Windows 2000，大家最熟悉的XP还没有出来。我的一群做基金核心系统的同事们代码写烦了，
+于是做了一个快速代码生成器，通过简单的配置和勾选，可以快速生成复杂的界面和增删改查功能。80%的功能可以很快出来，无论是开发还是客户都很高兴。</p>
+
+<p>但是问题在于剩下的20%，这剩下的部分通常是某个复杂的业务界面，或者是系统的算法核心，并且和前后端都可能关联。
+大量的精力都投入在了20%的工作上，甚至需要跳出原有的框架，用一些技巧去满足功能需求。
+一句话，就是痛苦指数相当高。前面剩下来的时间，可能还不够后面折腾的。让我印象深刻的是客户对我同事所在项目组工作的评价：</p>
+
+<blockquote>
+  <p>你们啊！把Delphi的优点做成了缺点！</p>
+</blockquote>
+
+<p>所有的低代码和无代码平台都有这个问题。工作量的严重不均衡：80%增删改查爽的要死，20%的特殊功能折腾得想死。</p>
+
+<p>我的老东家K有自己的低代码开发平台，并且围绕这个做成了一个生态体系，集团开发核心产品，外围供应商负责实施和二次开发。
+但这个低代码的生态是一个围城，防止了外人的侵入，也把自己困在里面。我问过几个好朋友这个低代码平台对业务需求的满足率，大概在50%左右，也就是一半业务开发很快，一半业务要在这个体系之外编写代码。</p>
+
+<p>我在老东家D的一个同事，独立开发了一个低代码平台。这个低代码平台的特点是用了一些”算子”概念去扩展，缺点是依然是前端和逻辑绑定太死。</p>
+
+<p>这几个例子可以看出，所有的低代码平台最大的问题就是”不灵活”。</p>
+
+<p>另外的一个严重问题是”没有普适性”。一个开发人员如果学习了某个X代码平台的开发技术，就意味着他用X代码平台的期间里，和开放架构是脱离的。
+直白了说，这个开发人员换工作的时候会发现自己已经和行业流行技术栈脱节了。</p>
+
+<p>低代码和无代码成了员工发展的绊脚石。</p>
+
+<h2 id="本质">本质</h2>
+
+<h3 id="低代码">低代码</h3>
+
+<p>低代码等价于DSL（Domain Specific Language，领域专用语言），马丁福勒（Martin Fowler）说DSL最重要的特征就是：</p>
+
+<blockquote>
+  <p>有限表达力</p>
+</blockquote>
+
+<p>这是和通用语言相比最显著的特征，DSL是针对专门某个特定领域的编程语言。也就是意味着，DSL通常需要一个业务化的基础平台，并且为这个基础平台提供胶水代码。
+而我们所谓的低代码，充其量就是给DSL加了一个可视化的界面。</p>
+
+<h3 id="无代码">无代码</h3>
+
+<p>无代码和低代码虽然只有一字之差，但是要求是天壤之别。无代码实际就是对标通用编程语言的，它要实现的是”图灵完备性”。当前市面上除了Mendix和有限几个竞品之外，
+几乎所有自称无代码的产品，都实际上是低代码。
+信通院2022年在整理低代码和无代码平台的标准，我在各种大佬参加的研讨会上斗胆提问了一下，发现没人意识到无代码需要和图灵完备挂钩。</p>
+
+<p>无论是低代码，还是无代码，最终需要的都是元数据的描述能力。</p>
+
+<h2 id="元数据">元数据</h2>
+
+<p>元数据的定义是”描述数据的数据”，通俗点讲，SQL里的DDL定义的就是元数据。</p>
+
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+</pre></td><td class="rouge-code"><pre><span class="k">CREATE</span> <span class="k">TABLE</span> <span class="n">table001</span> <span class="p">(</span>
+    <span class="n">id</span> <span class="nb">INT</span><span class="p">,</span>
+    <span class="n">title</span> <span class="nb">VARCHAR</span>
+<span class="p">)</span>
+</pre></td></tr></tbody></table></code></pre></div></div>
+
+<p>现在元数据的描述能力还相当原始，大部分人对元数据的认知都集中在数据库建表层面。实际上，我看到目前最高的元数据是OMG组织的CWM（Common Warehouse Metamodel）
+规范定义。除了字段定义之外，还有数据变换。</p>
+
+<p>低代码和无代码的元数据更复杂，实际上考验的是设计者对应用程序构成的理解。目前的这些X代码产品，通常会抽象出来的应用程序元素有：</p>
+
+<ul>
+  <li>页面：就是对应一个一个可以看到的页面</li>
+  <li>控件/组件：页面上的各种元素的抽象，基本都会支持绑定一些数据</li>
+  <li>事件/调用：调用后台API的消息，也有扩展成可以调用非后台API</li>
+  <li>算法：独立的算法或业务逻辑。通常会支持第三方定义</li>
+</ul>
+
+<p>其他还有很多产品特有的概念和术语，然后把这一切糅合起来，就以为可以描述一个应用程序了。我很怀疑他们是否真的收集到了足够的用例，并对他们设计的架构做过充分的验证。</p>
+
+<p>现在元数据最大的问题就是</p>
+
+<blockquote>
+  <p>描述能力不足</p>
+</blockquote>
+
+<h2 id="展望">展望</h2>
+
+<p>对于西门子的Mendix无代码平台来说，最好的一个广告就是<a href="https://zhuanlan.zhihu.com/p/337213952">特斯拉使用Mendix</a>用4个月编写完成了一个ERP。
+看到这个新闻的时候我只想说一句话</p>
+
+<blockquote>
+  <p>那是因为Elon Mask不是中国人，换个中国甲方试试！？</p>
+</blockquote>
+
+<p>国内的几个大厂的低代码/无代码平台，做一些促销表单应该是没问题的。但是真正要达到替代应用程序的境界，难！</p>
+
+<p>如何判断一个X代码平台是否有足够的能力？只需要去看他们的数据结构定义功能，只有元数据能力上来了，才有提升的机会。否则，只是靠几个牛人拍脑袋想是没用的。
+他们至少需要一个博士，去证明元数据模型的图灵完备性，否则做啥无代码？</p>
+
+<p>这才是要点。</p>
+
+<h2 id="附加">附加</h2>
+
+<p>目前加速代码编写的工具不少，但是我只用一个工具<a href="https://www.jhipster.tech">JHipster</a>，用它生成代码，然后自己改。这个又是一个很好的故事，我们下次聊。</p>
+
+
+
+                <hr style="visibility: hidden;">
+                <ul class="pager">
+                    
+                    <li class="previous">
+                        <a href="/2023/02/15/About-Read-Articles/" data-toggle="tooltip" data-placement="top" title="关于上网看文章">
+                        Previous<br>
+                        <span>关于上网看文章</span>
+                        </a>
+                    </li>
+                    
+                    
+                </ul>
+                <hr style="visibility: hidden;">
+
+                
+
+                
+            </div>  
+
+    <!-- Side Catalog Container -->
+        
+            <div class="
+                col-lg-2 col-lg-offset-0
+                visible-lg-block
+                sidebar-container
+                catalog-container">
+                <div class="side-catalog">
+                    <hr class="hidden-sm hidden-xs">
+                    <h5>
+                        <a class="catalog-toggle" href="#">CATALOG</a>
+                    </h5>
+                    <ul class="catalog-body"></ul>
+                </div>
+            </div>
+        
+
+    <!-- Sidebar Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+
+
+<section>
+    
+        <hr class="hidden-sm hidden-xs">
+    
+    <h5><a href="/archive/">FEATURED TAGS</a></h5>
+    <div class="tags">
+        
+        
+        
+        
+        
+        
+                <a data-sort="0009" 
+                    href="/archive/?tag=%E6%9E%B6%E6%9E%84"
+                    title="架构"
+                    rel="3">架构</a>
+        
+                <a data-sort="0009" 
+                    href="/archive/?tag=%E6%96%B9%E6%B3%95"
+                    title="方法"
+                    rel="3">方法</a>
+        
+                <a data-sort="0009" 
+                    href="/archive/?tag=%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1"
+                    title="面向对象"
+                    rel="3">面向对象</a>
+        
+                <a data-sort="0010" 
+                    href="/archive/?tag=%E4%B8%9A%E5%8A%A1"
+                    title="业务"
+                    rel="2">业务</a>
+        
+                <a data-sort="0010" 
+                    href="/archive/?tag=%E4%BC%81%E4%B8%9A%E7%AE%A1%E7%90%86"
+                    title="企业管理"
+                    rel="2">企业管理</a>
+        
+                <a data-sort="0010" 
+                    href="/archive/?tag=%E5%BB%BA%E6%A8%A1"
+                    title="建模"
+                    rel="2">建模</a>
+        
+                <a data-sort="0010" 
+                    href="/archive/?tag=%E5%BF%83%E5%BE%97"
+                    title="心得"
+                    rel="2">心得</a>
+        
+                <a data-sort="0010" 
+                    href="/archive/?tag=%E8%BD%AF%E4%BB%B6%E8%AE%BE%E8%AE%A1"
+                    title="软件设计"
+                    rel="2">软件设计</a>
+    </div>
+</section>
+
+
+                <!-- Friends Blog -->
+                
+<hr>
+<h5>FRIENDS</h5>
+<ul class="list-inline">
+  
+    
+  <li><a href="http://bigtall.cnblogs.com">博客园·老翅寒暑</a></li>
+    
+  
+    
+    <li>
+      <span>微信个人号·老翅寒暑</span>
+      <img src="/img/qrcode-bigtall.png" alt="微信个人号·老翅寒暑" />
+    </li>
+    
+  
+</ul>
+
+            </div>
+        </div>
+    </div>
+</article>
+
+<!-- add support for mathjax by voleking-->
+
+
+
+
+
+
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+<!-- anchor-js, Doc:http://bryanbraun.github.io/anchorjs/ -->
+<script>
+    async("//cdnjs.cloudflare.com/ajax/libs/anchor-js/1.1.1/anchor.min.js",function(){
+        anchors.options = {
+          visible: 'hover',
+          placement: 'right',
+          // icon: '#'
+        };
+        anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
+    })
+</script>
+<style>
+    /* place left on bigger screen */
+    @media all and (min-width: 800px) {
+        .anchorjs-link{
+            position: absolute;
+            left: -0.75em;
+            font-size: 1.1em;
+            margin-top : -0.1em;
+        }
+    }
+</style>
+
+
+
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <!-- SNS Link -->
+                
+
+
+<ul class="list-inline text-center">
+
+
+  
+  
+  
+  
+  
+  
+  <li>
+    <a target="_blank" href="https://github.com/jiangjianbo">
+      <span class="fa-stack fa-lg">
+        <i class="fa fa-circle fa-stack-2x"></i>
+        <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+      </span>
+    </a>
+  </li>
+  
+  
+</ul>
+
+                <p class="copyright text-muted">
+                    Copyright &copy; 老翅寒暑 2023
+                    <br>
+                    Powered by <a href="http://jiangjianbo.github.io">老翅寒暑</a>
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+<script src="/js/jquery.min.js"></script>
+
+<!-- Bootstrap Core JavaScript -->
+<!-- Currently, only navbar scroll-down effect at desktop still depends on this -->
+<script src="/js/bootstrap.min.js"></script>
+
+<!-- Custom Theme JavaScript -->
+<script src="/js/hux-blog.min.js"></script>
+
+<!-- Simple Jekyll Search -->
+<script src="/js/simple-jekyll-search.min.js"></script>
+
+<!-- Service Worker -->
+
+<script src="/js/snackbar.js"></script>
+<script src="/js/sw-registration.js"></script>
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+        var d = document, t = 'script',
+            o = d.createElement(t),
+            s = d.getElementsByTagName(t)[0];
+        o.src = u;
+        if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+        s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!--
+     Because of the native support for backtick-style fenced code blocks
+     right within the Markdown is landed in Github Pages,
+     From V1.6, There is no need for Highlight.js,
+     so Huxblog drops it officially.
+
+     - https://github.com/blog/2100-github-pages-now-faster-and-simpler-with-jekyll-3-0
+     - https://help.github.com/articles/creating-and-highlighting-code-blocks/
+     - https://github.com/jneen/rouge/wiki/list-of-supported-languages-and-lexers
+-->
+<!--
+    <script>
+        async("http://cdn.bootcss.com/highlight.js/8.6/highlight.min.js", function(){
+            hljs.initHighlightingOnLoad();
+        })
+    </script>
+    <link href="http://cdn.bootcss.com/highlight.js/8.6/styles/github.min.css" rel="stylesheet">
+-->
+
+
+
+
+
+
+
+<!--fastClick.js -->
+<script>
+    async("/js/fastclick.min.js", function () {
+        var $nav = document.querySelector("nav");
+        if ($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+<!-- Google Analytics -->
+
+
+
+<!-- Baidu Tongji -->
+
+
+
+<!-- Side Catalog -->
+
+<script type="text/javascript">
+    function generateCatalog(selector) {
+
+        // interop with multilangual 
+        if ('' == 'true') {
+            _containerSelector = 'div.post-container.active'
+        } else {
+            _containerSelector = 'div.post-container'
+        }
+
+        // init
+        var P = $(_containerSelector), a, n, t, l, i, c;
+        a = P.find('h1,h2,h3,h4,h5,h6');
+
+        // clean
+        $(selector).html('')
+
+        // appending
+        a.each(function () {
+            n = $(this).prop('tagName').toLowerCase();
+            i = "#" + $(this).prop('id');
+            t = $(this).text();
+            c = $('<a href="' + i + '" rel="nofollow">' + t + '</a>');
+            l = $('<li class="' + n + '_nav"></li>').append(c);
+            $(selector).append(l);
+        });
+        return true;
+    }
+
+    generateCatalog(".catalog-body");
+
+    // toggle side catalog
+    $(".catalog-toggle").click((function (e) {
+        e.preventDefault();
+        $('.side-catalog').toggleClass("fold")
+    }))
+
+    /*
+     * Doc: https://github.com/davist11/jQuery-One-Page-Nav
+     * Fork by Hux to support padding
+     */
+    async("/js/jquery.nav.js", function () {
+        $('.catalog-body').onePageNav({
+            currentClass: "active",
+            changeHash: !1,
+            easing: "swing",
+            filter: "",
+            scrollSpeed: 700,
+            scrollOffset: 0,
+            scrollThreshold: .2,
+            begin: null,
+            end: null,
+            scrollChange: null,
+            padding: 80
+        });
+    });
+</script>
+
+
+
+<!-- Multi-Lingual -->
+
+
+<!-- Simple Jekyll Search -->
+<script>
+    // https://stackoverflow.com/questions/1912501/unescape-html-entities-in-javascript
+    function htmlDecode(input) {
+        var e = document.createElement('textarea');
+        e.innerHTML = input;
+        // handle case of empty input
+        return e.childNodes.length === 0 ? "" : e.childNodes[0].nodeValue;
+    }
+
+    SimpleJekyllSearch({
+        searchInput: document.getElementById('search-input'),
+        resultsContainer: document.getElementById('search-results'),
+        json: '/search.json',
+        searchResultTemplate: '<div class="post-preview item"><a href="{url}"><h2 class="post-title">{title}</h2><h3 class="post-subtitle">{subtitle}</h3><hr></a></div>',
+        noResultsText: 'No results',
+        limit: 50,
+        fuzzy: false,
+        // a hack to get escaped subtitle unescaped. for some reason, 
+        // post.subtitle w/o escape filter nuke entire search.
+        templateMiddleware: function (prop, value, template) {
+            if (prop === 'subtitle' || prop === 'title') {
+                if (value.indexOf("code")) {
+                    return htmlDecode(value);
+                } else {
+                    return value;
+                }
+            }
+        }
+    });
+
+    $(document).ready(function () {
+        var $searchPage = $('.search-page');
+        var $searchOpen = $('.search-icon');
+        var $searchClose = $('.search-icon-close');
+        var $searchInput = $('#search-input');
+        var $body = $('body');
+
+        $searchOpen.on('click', function (e) {
+            e.preventDefault();
+            $searchPage.toggleClass('search-active');
+            var prevClasses = $body.attr('class') || '';
+            setTimeout(function () {
+                $body.addClass('no-scroll');
+            }, 400)
+
+            if ($searchPage.hasClass('search-active')) {
+                $searchClose.on('click', function (e) {
+                    e.preventDefault();
+                    $searchPage.removeClass('search-active');
+                    $body.attr('class', prevClasses);  // from closure 
+                });
+                $searchInput.focus();
+            }
+        });
+    });
+</script>
+
+
+<!-- Image to hack wechat -->
+<img src="/img/icon_wechat.png" width="0" height="0" />
+<!-- Migrate from head to bottom, no longer block render and still work -->
+
+</body>
+
+</html>
