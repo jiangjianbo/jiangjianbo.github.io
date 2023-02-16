@@ -3,10 +3,10 @@
   <channel>
     <title>老翅寒暑</title>
     <description>一个老鸟的自白</description>
-    <link>http://localhost:4000/</link>
-    <atom:link href="http://localhost:4000/feed.xml" rel="self" type="application/rss+xml" />
-    <pubDate>Fri, 17 Feb 2023 00:44:13 +0800</pubDate>
-    <lastBuildDate>Fri, 17 Feb 2023 00:44:13 +0800</lastBuildDate>
+    <link>http://jiangjianbo.github.io/</link>
+    <atom:link href="http://jiangjianbo.github.io/feed.xml" rel="self" type="application/rss+xml" />
+    <pubDate>Fri, 17 Feb 2023 00:48:58 +0800</pubDate>
+    <lastBuildDate>Fri, 17 Feb 2023 00:48:58 +0800</lastBuildDate>
     <generator>Jekyll v4.3.1</generator>
     
       <item>
@@ -130,8 +130,8 @@
 
 </description>
         <pubDate>Wed, 15 Feb 2023 00:00:00 +0800</pubDate>
-        <link>http://localhost:4000/2023/02/15/about-low-code/</link>
-        <guid isPermaLink="true">http://localhost:4000/2023/02/15/about-low-code/</guid>
+        <link>http://jiangjianbo.github.io/2023/02/15/about-low-code/</link>
+        <guid isPermaLink="true">http://jiangjianbo.github.io/2023/02/15/about-low-code/</guid>
         
         <category>心得</category>
         
@@ -169,8 +169,8 @@
 
 </description>
         <pubDate>Wed, 15 Feb 2023 00:00:00 +0800</pubDate>
-        <link>http://localhost:4000/2023/02/15/About-Read-Articles/</link>
-        <guid isPermaLink="true">http://localhost:4000/2023/02/15/About-Read-Articles/</guid>
+        <link>http://jiangjianbo.github.io/2023/02/15/About-Read-Articles/</link>
+        <guid isPermaLink="true">http://jiangjianbo.github.io/2023/02/15/About-Read-Articles/</guid>
         
         <category>心得</category>
         
@@ -486,8 +486,8 @@ link github_pages to github.io--&gt;&lt;g id=&apos;link_github_pages_github.io&a
 &lt;/ol&gt;
 </description>
         <pubDate>Tue, 13 Dec 2022 00:00:00 +0800</pubDate>
-        <link>http://localhost:4000/2022/12/13/Jekyll-Site/</link>
-        <guid isPermaLink="true">http://localhost:4000/2022/12/13/Jekyll-Site/</guid>
+        <link>http://jiangjianbo.github.io/2022/12/13/Jekyll-Site/</link>
+        <guid isPermaLink="true">http://jiangjianbo.github.io/2022/12/13/Jekyll-Site/</guid>
         
         <category>Jekyll</category>
         
@@ -604,8 +604,8 @@ link jpa_ref to id_ref--&gt;&lt;g id=&apos;link_jpa_ref_id_ref&apos;&gt;&lt;path
 
 </description>
         <pubDate>Fri, 04 Nov 2022 00:00:00 +0800</pubDate>
-        <link>http://localhost:4000/2022/11/04/DDD-Object-Reference/</link>
-        <guid isPermaLink="true">http://localhost:4000/2022/11/04/DDD-Object-Reference/</guid>
+        <link>http://jiangjianbo.github.io/2022/11/04/DDD-Object-Reference/</link>
+        <guid isPermaLink="true">http://jiangjianbo.github.io/2022/11/04/DDD-Object-Reference/</guid>
         
         <category>方法</category>
         
@@ -674,8 +674,8 @@ link jpa_ref to id_ref--&gt;&lt;g id=&apos;link_jpa_ref_id_ref&apos;&gt;&lt;path
 
 </description>
         <pubDate>Tue, 28 May 2019 00:00:00 +0800</pubDate>
-        <link>http://localhost:4000/2019/05/28/Model-For-Cash-Flow/</link>
-        <guid isPermaLink="true">http://localhost:4000/2019/05/28/Model-For-Cash-Flow/</guid>
+        <link>http://jiangjianbo.github.io/2019/05/28/Model-For-Cash-Flow/</link>
+        <guid isPermaLink="true">http://jiangjianbo.github.io/2019/05/28/Model-For-Cash-Flow/</guid>
         
         <category>方法</category>
         
@@ -729,8 +729,8 @@ link jpa_ref to id_ref--&gt;&lt;g id=&apos;link_jpa_ref_id_ref&apos;&gt;&lt;path
 &lt;p&gt;看起来很美！&lt;/p&gt;
 </description>
         <pubDate>Mon, 27 May 2019 00:00:00 +0800</pubDate>
-        <link>http://localhost:4000/2019/05/27/About-Universal-Framework/</link>
-        <guid isPermaLink="true">http://localhost:4000/2019/05/27/About-Universal-Framework/</guid>
+        <link>http://jiangjianbo.github.io/2019/05/27/About-Universal-Framework/</link>
+        <guid isPermaLink="true">http://jiangjianbo.github.io/2019/05/27/About-Universal-Framework/</guid>
         
         <category>架构</category>
         
@@ -825,8 +825,8 @@ link jpa_ref to id_ref--&gt;&lt;g id=&apos;link_jpa_ref_id_ref&apos;&gt;&lt;path
 &lt;p&gt;当然，正事是对这些数据进行探索，比如每个月的成单率变化规律，将这个规律总结出算法，再变成代码，实现出一个预测成单率的软件功能。&lt;/p&gt;
 </description>
         <pubDate>Wed, 22 May 2019 00:00:00 +0800</pubDate>
-        <link>http://localhost:4000/2019/05/22/Model-for-Enterprise/</link>
-        <guid isPermaLink="true">http://localhost:4000/2019/05/22/Model-for-Enterprise/</guid>
+        <link>http://jiangjianbo.github.io/2019/05/22/Model-for-Enterprise/</link>
+        <guid isPermaLink="true">http://jiangjianbo.github.io/2019/05/22/Model-for-Enterprise/</guid>
         
         <category>方法</category>
         
@@ -861,8 +861,8 @@ link jpa_ref to id_ref--&gt;&lt;g id=&apos;link_jpa_ref_id_ref&apos;&gt;&lt;path
 
 </description>
         <pubDate>Mon, 13 May 2019 00:00:00 +0800</pubDate>
-        <link>http://localhost:4000/2019/05/13/OO-Bionics/</link>
-        <guid isPermaLink="true">http://localhost:4000/2019/05/13/OO-Bionics/</guid>
+        <link>http://jiangjianbo.github.io/2019/05/13/OO-Bionics/</link>
+        <guid isPermaLink="true">http://jiangjianbo.github.io/2019/05/13/OO-Bionics/</guid>
         
         <category>思想</category>
         
@@ -892,8 +892,8 @@ link jpa_ref to id_ref--&gt;&lt;g id=&apos;link_jpa_ref_id_ref&apos;&gt;&lt;path
 
 </description>
         <pubDate>Tue, 30 Apr 2019 00:00:00 +0800</pubDate>
-        <link>http://localhost:4000/2019/04/30/Software-Enterprise-Tech-Sys/</link>
-        <guid isPermaLink="true">http://localhost:4000/2019/04/30/Software-Enterprise-Tech-Sys/</guid>
+        <link>http://jiangjianbo.github.io/2019/04/30/Software-Enterprise-Tech-Sys/</link>
+        <guid isPermaLink="true">http://jiangjianbo.github.io/2019/04/30/Software-Enterprise-Tech-Sys/</guid>
         
         <category>体系</category>
         
@@ -913,8 +913,8 @@ link jpa_ref to id_ref--&gt;&lt;g id=&apos;link_jpa_ref_id_ref&apos;&gt;&lt;path
 &lt;a href=&quot;https://www.zhihu.com/question/21621731&quot;&gt;为什么中国人均GDP在世界上的排名如此靠后&lt;/a&gt;&lt;/p&gt;
 </description>
         <pubDate>Tue, 30 Apr 2019 00:00:00 +0800</pubDate>
-        <link>http://localhost:4000/2019/04/30/About-Efficient/</link>
-        <guid isPermaLink="true">http://localhost:4000/2019/04/30/About-Efficient/</guid>
+        <link>http://jiangjianbo.github.io/2019/04/30/About-Efficient/</link>
+        <guid isPermaLink="true">http://jiangjianbo.github.io/2019/04/30/About-Efficient/</guid>
         
         <category>随想</category>
         
