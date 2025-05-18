@@ -37,7 +37,7 @@ gem 'kramdown-plantuml'
 
 group :jekyll_plugins do
   gem "jekyll-feed", "~> 0.12"
-  gem 'jekyll-spaceship'
+#  gem 'jekyll-spaceship'
 end
 ```
 2. 在 `_config.yml` 中找到 `plugins:` 位置，并加入两个插件
@@ -46,8 +46,9 @@ end
 plugins:
   - "jekyll-paginate"
   - "kramdown-plantuml"
-  - "jekyll-spaceship"
+#  - "jekyll-spaceship"
 ```
+
 3. 继续在 `_config.yml` 中加入两个插件的配置项
 <pre>
 jekyll-spaceship:
@@ -118,7 +119,7 @@ jekyll-spaceship:
 另外一个原因我不用这个插件是：所有生成的plantuml图片竟然是引用[](plantuml.com)提供的免费图片生成的链接。
 我说你一个页面生成器，不是一次性生成个图片嵌入到网页里，每次访问去耗费人家plantuml的流量，是不是有问题啊？损人不利己啊！
 
-4. 启动命令行，在git工程目录运行命令 `bundle install` 下载并安装插件。
+1. 启动命令行，在git工程目录运行命令 `bundle install` 下载并安装插件。
 
 如果运行的时候出现类似错误 `Warning: the fonts "Times" and "Times" are not available for the Java logical font`，表示电脑中缺少字体。
 尤其是Mac电脑，请到 [](https://www.freebestfonts.com/timr45w-font) 下载并安装字体。
@@ -143,8 +144,10 @@ a --> b
 如果尚未创建 `gh-pages` 分支，可以用如下的方法创建：
 
 ```bash
+mkdir gh-pages
+cd gh-pages
 git checkout --orphan gh-pages
-git rm -rf .
+git rm -rf ../gh-pages
 git commit --allow-empty -m "initial commit"
 git push origin gh-pages
 ```
@@ -192,7 +195,7 @@ github_pages -right-> [github.io] : 推送
 初学者对创建新文章的格式会把握不好，所以可以用命令行增加新文章。
 
 ```bash
-rake post title="My first blog"`
+rake post title="My first blog"
 ```
 
 ### 自动复制
